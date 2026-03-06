@@ -12,6 +12,7 @@ services:
     environment:
       - DB_PATH=/app/data/culture_ontology.db
       - MCP_TRANSPORT=sse
+      - MCP_HOST=0.0.0.0
       - PORT=8008
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
     restart: unless-stopped

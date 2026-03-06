@@ -29,6 +29,7 @@ RUN mkdir -p /app/data
 # Default environment
 ENV DB_PATH=/app/data/culture_ontology.db
 ENV MCP_TRANSPORT=stdio
+ENV MCP_HOST=127.0.0.1
 ENV PORT=8008
 
 EXPOSE 8008

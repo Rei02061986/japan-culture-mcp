@@ -16,8 +16,13 @@ from typing import Any, Optional
 import httpx
 from mcp.server.fastmcp import FastMCP
 
+_mcp_host = os.environ.get("MCP_HOST", "127.0.0.1")
+_mcp_port = int(os.environ.get("PORT", "8008"))
+
 mcp = FastMCP(
     "japan-culture",
+    host=_mcp_host,
+    port=_mcp_port,
     instructions=(
         "日本文化セレンディピティエンジン MCP v1.3.0 — "
         "10,000,000+エンティティと800,000+文化的接続（64,000+聖地巡礼接続含む）を持つオントロジーDBを搭載。"
@@ -5286,8 +5291,4 @@ if __name__ == "__main__":
     transport = os.environ.get("MCP_TRANSPORT", "stdio")
     if transport not in ("stdio", "sse", "streamable-http"):
         transport = "stdio"
-    if transport in ("sse", "streamable-http"):
-        port = int(os.environ.get("PORT", "8008"))
-        mcp.run(transport=transport, host="0.0.0.0", port=port)
-    else:
-        mcp.run(transport=transport)
+    mcp.run(transport=transport)
