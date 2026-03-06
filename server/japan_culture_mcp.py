@@ -1,9 +1,9 @@
-"""Japan Culture MCP Server — v1.2.0
+"""Japan Culture MCP Server — v1.3.0
 古典文化〜現代サブカルチャーを横断検索する日本文化MCPサーバー
 AniList + MADB + JapanSearch + Wikidata + NDL + DBpedia + GSI + Google Maps + ToMuCo + 国土数値情報
 10,000,000+エンティティ、800,000+文化的接続（64,000+聖地巡礼）のオントロジーDB搭載
-FTS5全文検索 + R-Tree空間インデックスによる高速検索
-Phase 16: 地域プロファイル、観光資産検索、文化密度分析ツール追加
+FTS5全文検索(trigram CJK対応) + R-Tree空間インデックスによる高速検索
+Phase 18: FTS5 trigram CJK修正、release_yearフィルタ、都道府県プロファイル、聖地タイムライン追加
 """
 
 import asyncio
@@ -18,13 +18,13 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP(
     "japan-culture",
     instructions=(
-        "日本文化セレンディピティエンジン MCP v1.2.0 — "
+        "日本文化セレンディピティエンジン MCP v1.3.0 — "
         "10,000,000+エンティティと800,000+文化的接続（64,000+聖地巡礼接続含む）を持つオントロジーDBを搭載。"
         "5軸（テーマ・時代・媒体・地理・体験）で文化的セレンディピティを発見。"
         "160+ソースを統合: JapanSearch, Wikidata, MADB, AniList, NDL, MusicBrainz, DBpedia, ToMuCo, OSM, 国土数値情報, 地理院タイル, Google Maps。"
-        "古典文化（浮世絵・古典籍・文化財・伝統工芸）から現代サブカルチャー（アニメ・漫画・ゲーム）まで39ツールで横断検索可能。"
-        "FTS5全文検索 + R-Tree空間インデックスで高速検索。聖地巡礼検索・ルート生成・周辺文化検索にも対応。"
-        "新機能: 地域プロファイル、観光資産検索、文化密度分析。"
+        "古典文化（浮世絵・古典籍・文化財・伝統工芸）から現代サブカルチャー（アニメ・漫画・ゲーム）まで42ツールで横断検索可能。"
+        "FTS5 trigram全文検索(CJK部分一致対応) + R-Tree空間インデックスで高速検索。"
+        "聖地巡礼検索・ルート生成・周辺文化検索・release_yearフィルタ・都道府県プロファイル・聖地タイムラインにも対応。"
     ),
 )
 
@@ -1229,6 +1229,7 @@ from pathlib import Path
 _ONTOLOGY_DB = Path(os.environ.get("DB_PATH", Path(__file__).parent.parent / "ontology" / "culture_ontology.db"))
 _thread_local = threading.local()
 _HAS_FTS5: Optional[bool] = None
+_HAS_FTS5_TRIGRAM: Optional[bool] = None
 _HAS_RTREE: Optional[bool] = None
 
 
@@ -1262,6 +1263,16 @@ def _has_fts5() -> bool:
     return _HAS_FTS5
 
 
+def _has_fts5_trigram() -> bool:
+    """Check if entities_fts_trigram virtual table exists."""
+    global _HAS_FTS5_TRIGRAM
+    if _HAS_FTS5_TRIGRAM is None:
+        db = _get_db()
+        r = db.execute("SELECT name FROM sqlite_master WHERE name='entities_fts_trigram'").fetchone()
+        _HAS_FTS5_TRIGRAM = r is not None
+    return _HAS_FTS5_TRIGRAM
+
+
 def _has_rtree() -> bool:
     """Check if entities_rtree virtual table exists."""
     global _HAS_RTREE
@@ -1273,7 +1284,20 @@ def _has_rtree() -> bool:
 
 
 def _fts_search(db, keyword: str, limit: int = 20):
-    """FTS5 full-text search with fallback to LIKE."""
+    """FTS5 full-text search: trigram (>=3 chars) -> unicode61 -> LIKE fallback.
+
+    Trigram tokenizer requires >=3 code-point queries. For shorter CJK queries
+    (e.g. "北斎", "聖地"), fall back to unicode61 phrase match.
+    """
+    kw_len = len(keyword)
+    if _has_fts5_trigram() and kw_len >= 3:
+        safe_kw = keyword.replace("'", "''")
+        return db.execute(
+            'SELECT e.id, e.wikidata_id, e.label_ja, e.label_en, e.entity_type, e.source '
+            'FROM entities e JOIN entities_fts_trigram f ON e.id = f.rowid '
+            'WHERE entities_fts_trigram MATCH ? ORDER BY rank LIMIT ?',
+            (safe_kw, limit),
+        ).fetchall()
     if _has_fts5():
         safe_kw = keyword.replace('"', '""')
         return db.execute(
@@ -4437,6 +4461,409 @@ async def analyze_cultural_density(
         }, ensure_ascii=False, indent=2)
     except Exception as e:
         return json.dumps({"error": f"analyze_cultural_density failed: {str(e)}"})
+
+
+# ══════════════════════════════════════════════════════════
+# Phase 18 Tools — release_year Filter, Prefecture Profile, Pilgrimage Timeline (v1.3.0)
+# ══════════════════════════════════════════════════════════
+
+# Prefecture definitions: code -> (name_ja, center_lat, center_lon, radius_km)
+_PREFECTURE_DEFS = {
+    "hokkaido": ("北海道", 43.0642, 141.3469, 120),
+    "aomori": ("青森県", 40.8244, 140.7400, 50),
+    "iwate": ("岩手県", 39.7036, 141.1527, 60),
+    "miyagi": ("宮城県", 38.2688, 140.8721, 40),
+    "akita": ("秋田県", 39.7186, 140.1024, 50),
+    "yamagata": ("山形県", 38.2404, 140.3633, 40),
+    "fukushima": ("福島県", 37.7500, 140.4678, 50),
+    "ibaraki": ("茨城県", 36.3419, 140.4468, 35),
+    "tochigi": ("栃木県", 36.5658, 139.8836, 35),
+    "gunma": ("群馬県", 36.3912, 139.0608, 35),
+    "saitama": ("埼玉県", 35.8569, 139.6489, 25),
+    "chiba": ("千葉県", 35.6047, 140.1233, 30),
+    "tokyo": ("東京都", 35.6762, 139.6503, 25),
+    "kanagawa": ("神奈川県", 35.4478, 139.6425, 20),
+    "niigata": ("新潟県", 37.9026, 139.0236, 55),
+    "toyama": ("富山県", 36.6953, 137.2114, 30),
+    "ishikawa": ("石川県", 36.5946, 136.6256, 35),
+    "fukui": ("福井県", 35.8562, 136.2258, 30),
+    "yamanashi": ("山梨県", 35.6642, 138.5684, 25),
+    "nagano": ("長野県", 36.2378, 138.1813, 45),
+    "gifu": ("岐阜県", 35.3912, 136.7223, 35),
+    "shizuoka": ("静岡県", 34.9769, 138.3831, 40),
+    "aichi": ("愛知県", 35.1802, 136.9066, 30),
+    "mie": ("三重県", 34.7303, 136.5086, 40),
+    "shiga": ("滋賀県", 35.0045, 135.8686, 25),
+    "kyoto": ("京都府", 35.0116, 135.7681, 30),
+    "osaka": ("大阪府", 34.6937, 135.5023, 20),
+    "hyogo": ("兵庫県", 34.6913, 135.1830, 35),
+    "nara": ("奈良県", 34.6851, 135.8049, 20),
+    "wakayama": ("和歌山県", 33.9499, 135.3748, 30),
+    "tottori": ("鳥取県", 35.5039, 134.2383, 30),
+    "shimane": ("島根県", 35.4723, 133.0505, 40),
+    "okayama": ("岡山県", 34.6618, 133.9345, 30),
+    "hiroshima": ("広島県", 34.3966, 132.4596, 35),
+    "yamaguchi": ("山口県", 34.1861, 131.4714, 35),
+    "tokushima": ("徳島県", 34.0658, 134.5593, 25),
+    "kagawa": ("香川県", 34.3401, 134.0434, 20),
+    "ehime": ("愛媛県", 33.8417, 132.7661, 30),
+    "kochi": ("高知県", 33.5597, 133.5311, 35),
+    "fukuoka": ("福岡県", 33.6064, 130.4183, 30),
+    "saga": ("佐賀県", 33.2494, 130.2988, 20),
+    "nagasaki": ("長崎県", 32.7503, 129.8779, 30),
+    "kumamoto": ("熊本県", 32.7898, 130.7418, 30),
+    "oita": ("大分県", 33.2382, 131.6126, 30),
+    "miyazaki": ("宮崎県", 31.9111, 131.4239, 35),
+    "kagoshima": ("鹿児島県", 31.5602, 130.5581, 40),
+    "okinawa": ("沖縄県", 26.3344, 127.8056, 60),
+}
+
+
+# ── 40. filter_by_release_year ─────────────────────────────
+
+@mcp.tool()
+async def filter_by_release_year(
+    year_from: int = None,
+    year_to: int = None,
+    entity_type: str = None,
+    keyword: str = None,
+    limit: int = 30,
+) -> str:
+    """release_year（発表年）でエンティティをフィルタリングする。
+
+    アニメ・漫画・映画・ゲーム等の作品をrelease_yearで検索可能。
+    キーワードやエンティティタイプで絞り込みも可能。
+
+    Args:
+        year_from: 開始年（例: 2010）
+        year_to: 終了年（例: 2020）
+        entity_type: エンティティタイプフィルタ（例: "anime", "work", "manga"）
+        keyword: キーワードフィルタ（FTS5検索を併用）
+        limit: 最大結果数（1-100、default: 30）
+    """
+    try:
+        db = _get_db()
+        limit = max(1, min(limit, 100))
+
+        conditions = ["release_year IS NOT NULL", "is_dormant = 0"]
+        params = []
+
+        if year_from is not None:
+            conditions.append("release_year >= ?")
+            params.append(year_from)
+        if year_to is not None:
+            conditions.append("release_year <= ?")
+            params.append(year_to)
+        if entity_type:
+            conditions.append("entity_type = ?")
+            params.append(entity_type)
+
+        # If keyword specified, intersect with FTS5 results
+        keyword_ids = None
+        if keyword:
+            fts_results = _fts_search(db, keyword, limit=500)
+            keyword_ids = {r["id"] for r in fts_results}
+            if not keyword_ids:
+                return json.dumps({
+                    "source": "ontology_db (filter_by_release_year)",
+                    "query": {"year_from": year_from, "year_to": year_to,
+                              "entity_type": entity_type, "keyword": keyword},
+                    "total_results": 0,
+                    "items": [],
+                }, ensure_ascii=False, indent=2)
+
+        where = " AND ".join(conditions)
+        query = f"""
+            SELECT id, label_ja, label_en, entity_type, release_year,
+                   release_year_source, source, wikidata_id
+            FROM entities
+            WHERE {where}
+            ORDER BY release_year DESC
+            LIMIT ?
+        """
+        params.append(limit * 5 if keyword_ids else limit)
+
+        rows = db.execute(query, params).fetchall()
+
+        items = []
+        for r in rows:
+            if keyword_ids is not None and r["id"] not in keyword_ids:
+                continue
+            items.append({
+                "label_ja": r["label_ja"],
+                "label_en": r["label_en"],
+                "entity_type": r["entity_type"],
+                "release_year": r["release_year"],
+                "release_year_source": r["release_year_source"],
+                "source": r["source"],
+                "wikidata_id": r["wikidata_id"],
+            })
+            if len(items) >= limit:
+                break
+
+        return json.dumps({
+            "source": "ontology_db (filter_by_release_year)",
+            "query": {"year_from": year_from, "year_to": year_to,
+                      "entity_type": entity_type, "keyword": keyword},
+            "total_results": len(items),
+            "items": items,
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"filter_by_release_year failed: {str(e)}"})
+
+
+# ── 41. get_prefecture_profile ─────────────────────────────
+
+@mcp.tool()
+async def get_prefecture_profile(
+    prefecture: str,
+) -> str:
+    """都道府県単位の文化プロファイルを生成する。
+
+    都道府県内のエンティティ統計、テーマ分布、時代分布、主要文化資産、
+    聖地巡礼スポット数などを返す。地方創生や観光計画のデータに。
+
+    Args:
+        prefecture: 都道府県コード（例: "tokyo", "kyoto", "hokkaido", "okinawa"）
+                    47都道府県すべてに対応。
+    """
+    try:
+        db = _get_db()
+        pref = prefecture.lower().strip()
+
+        if pref not in _PREFECTURE_DEFS:
+            return json.dumps({
+                "error": f"Unknown prefecture: {pref}",
+                "available_prefectures": list(_PREFECTURE_DEFS.keys()),
+            }, ensure_ascii=False)
+
+        name_ja, center_lat, center_lon, radius_km = _PREFECTURE_DEFS[pref]
+
+        lat_offset = radius_km / 111.0
+        lon_offset = radius_km / (111.0 * max(math.cos(math.radians(center_lat)), 0.01))
+
+        # 1. Entity type breakdown
+        geo_entities = db.execute("""
+            SELECT entity_type, COUNT(*) as cnt
+            FROM entities
+            WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?
+              AND is_dormant = 0
+            GROUP BY entity_type
+            ORDER BY cnt DESC
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchall()
+
+        type_breakdown = {}
+        total_geo = 0
+        for row in geo_entities:
+            type_breakdown[row["entity_type"] or "unknown"] = row["cnt"]
+            total_geo += row["cnt"]
+
+        # 2. Theme distribution
+        themes = db.execute("""
+            SELECT et.value_code, COUNT(*) as cnt
+            FROM entity_tags et
+            JOIN entities e ON et.entity_id = e.id
+            WHERE et.axis = 'theme'
+              AND e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+              AND e.is_dormant = 0
+            GROUP BY et.value_code
+            ORDER BY cnt DESC
+            LIMIT 15
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchall()
+        theme_dist = [{"theme": t["value_code"], "count": t["cnt"]} for t in themes]
+
+        # 3. Era distribution
+        eras = db.execute("""
+            SELECT et.value_code, COUNT(*) as cnt
+            FROM entity_tags et
+            JOIN entities e ON et.entity_id = e.id
+            WHERE et.axis = 'era'
+              AND e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+              AND e.is_dormant = 0
+            GROUP BY et.value_code
+            ORDER BY cnt DESC
+            LIMIT 10
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchall()
+        era_dist = [{"era": e["value_code"], "count": e["cnt"]} for e in eras]
+
+        # 4. Pilgrimage spots in area
+        pilgrimage_count = db.execute("""
+            SELECT COUNT(DISTINCT e.id)
+            FROM entities e
+            JOIN connections c ON (c.entity_a_id = e.id OR c.entity_b_id = e.id)
+            WHERE e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+              AND c.connection_type LIKE 'pilgrimage%'
+              AND e.is_dormant = 0
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchone()[0]
+
+        # 5. Notable entities (most connected)
+        notable = db.execute("""
+            SELECT e.label_ja, e.label_en, e.entity_type,
+                   COUNT(c.id) as conn_count
+            FROM entities e
+            LEFT JOIN connections c ON (c.entity_a_id = e.id OR c.entity_b_id = e.id)
+                AND c.llm_verdict = 'keep'
+            WHERE e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+              AND e.is_dormant = 0
+            GROUP BY e.id
+            ORDER BY conn_count DESC
+            LIMIT 10
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchall()
+        notable_list = [
+            {"label_ja": n["label_ja"], "label_en": n["label_en"],
+             "entity_type": n["entity_type"], "connections": n["conn_count"]}
+            for n in notable
+        ]
+
+        # 6. Release year distribution (works in area)
+        year_dist = db.execute("""
+            SELECT release_year, COUNT(*) as cnt
+            FROM entities
+            WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?
+              AND release_year IS NOT NULL
+              AND is_dormant = 0
+            GROUP BY release_year
+            ORDER BY release_year DESC
+            LIMIT 20
+        """, (center_lat - lat_offset, center_lat + lat_offset,
+              center_lon - lon_offset, center_lon + lon_offset)).fetchall()
+        year_list = [{"year": y["release_year"], "count": y["cnt"]} for y in year_dist]
+
+        return json.dumps({
+            "source": "ontology_db (get_prefecture_profile)",
+            "prefecture": pref,
+            "prefecture_name": name_ja,
+            "center": {"lat": center_lat, "lon": center_lon},
+            "radius_km": radius_km,
+            "total_geo_entities": total_geo,
+            "entity_type_breakdown": type_breakdown,
+            "theme_distribution": theme_dist,
+            "era_distribution": era_dist,
+            "pilgrimage_spots": pilgrimage_count,
+            "notable_entities": notable_list,
+            "release_year_distribution": year_list,
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"get_prefecture_profile failed: {str(e)}"})
+
+
+# ── 42. pilgrimage_timeline ─────────────────────────────────
+
+@mcp.tool()
+async def pilgrimage_timeline(
+    region: str = None,
+    year_from: int = None,
+    year_to: int = None,
+    limit: int = 30,
+) -> str:
+    """聖地巡礼スポットをrelease_year順に時系列で表示する。
+
+    作品の発表年順に聖地巡礼スポットを並べ、コンテンツツーリズムの
+    時系列変化を可視化する。地域フィルタや年代フィルタも可能。
+
+    Args:
+        region: 地域コード（例: "kanto", "kinki"）。省略時は全国。
+        year_from: 開始年（例: 2000）
+        year_to: 終了年（例: 2024）
+        limit: 最大結果数（1-100、default: 30）
+    """
+    try:
+        db = _get_db()
+        limit = max(1, min(limit, 100))
+
+        # Build query for pilgrimage connections with release_year
+        conditions = [
+            "c.connection_type LIKE 'pilgrimage%'",
+            "e_work.release_year IS NOT NULL",
+            "e_loc.lat IS NOT NULL",
+            "e_loc.is_dormant = 0",
+        ]
+        params = []
+
+        if year_from is not None:
+            conditions.append("e_work.release_year >= ?")
+            params.append(year_from)
+        if year_to is not None:
+            conditions.append("e_work.release_year <= ?")
+            params.append(year_to)
+
+        # Region filter using bounding box
+        if region:
+            region = region.lower().strip()
+            region_def = _REGION_DEFS.get(region) or _PREFECTURE_DEFS.get(region)
+            if region_def:
+                _, rlat, rlon, rrad = region_def
+                lat_off = rrad / 111.0
+                lon_off = rrad / (111.0 * max(math.cos(math.radians(rlat)), 0.01))
+                conditions.append("e_loc.lat BETWEEN ? AND ?")
+                params.extend([rlat - lat_off, rlat + lat_off])
+                conditions.append("e_loc.lon BETWEEN ? AND ?")
+                params.extend([rlon - lon_off, rlon + lon_off])
+
+        where = " AND ".join(conditions)
+
+        rows = db.execute(f"""
+            SELECT
+                e_work.label_ja AS work_name,
+                e_work.label_en AS work_name_en,
+                e_work.entity_type AS work_type,
+                e_work.release_year,
+                e_loc.label_ja AS location_name,
+                e_loc.lat, e_loc.lon,
+                c.explanation,
+                c.connection_type
+            FROM connections c
+            JOIN entities e_work ON (c.entity_a_id = e_work.id OR c.entity_b_id = e_work.id)
+            JOIN entities e_loc ON (
+                (c.entity_a_id = e_loc.id OR c.entity_b_id = e_loc.id)
+                AND e_loc.id != e_work.id
+            )
+            WHERE {where}
+            ORDER BY e_work.release_year ASC
+            LIMIT ?
+        """, (*params, limit * 3)).fetchall()
+
+        # Group by work
+        works = {}
+        for r in rows:
+            key = r["work_name"]
+            if key not in works:
+                works[key] = {
+                    "work_name": r["work_name"],
+                    "work_name_en": r["work_name_en"],
+                    "work_type": r["work_type"],
+                    "release_year": r["release_year"],
+                    "locations": [],
+                }
+            if len(works[key]["locations"]) < 5:
+                works[key]["locations"].append({
+                    "name": r["location_name"],
+                    "lat": r["lat"],
+                    "lon": r["lon"],
+                    "type": r["connection_type"],
+                    "description": r["explanation"],
+                })
+
+        # Sort by release_year and limit
+        timeline = sorted(works.values(), key=lambda x: x["release_year"])[:limit]
+
+        # Add location count
+        for entry in timeline:
+            entry["location_count"] = len(entry["locations"])
+
+        return json.dumps({
+            "source": "ontology_db (pilgrimage_timeline)",
+            "query": {"region": region, "year_from": year_from, "year_to": year_to},
+            "total_works": len(timeline),
+            "timeline": timeline,
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"pilgrimage_timeline failed: {str(e)}"})
 
 
 # ── Entry point ────────────────────────────────────────────

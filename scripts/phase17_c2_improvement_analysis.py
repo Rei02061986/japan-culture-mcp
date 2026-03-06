@@ -11,8 +11,8 @@ from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
 
-INPUT_CSV = Path(__file__).resolve().parent.parent / "reports" / "phase17_codex_user_test.csv"
-OUTPUT_MD = Path(__file__).resolve().parent.parent / "reports" / "phase17_improvement_proposals.md"
+INPUT_CSV = Path(__file__).resolve().parent.parent / "reports" / "phase18_codex_user_test.csv"
+OUTPUT_MD = Path(__file__).resolve().parent.parent / "reports" / "phase18_improvement_proposals.md"
 
 
 def main():

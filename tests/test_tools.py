@@ -122,7 +122,7 @@ def test_db_path():
         );
     """)
 
-    # --- FTS5 ---
+    # --- FTS5 (unicode61) ---
     cur.execute("DROP TABLE IF EXISTS entities_fts")
     cur.execute("""
         CREATE VIRTUAL TABLE entities_fts USING fts5(
@@ -131,6 +131,21 @@ def test_db_path():
             content_rowid='id'
         )
     """)
+
+    # --- FTS5 (trigram for CJK substring matching) ---
+    cur.execute("DROP TABLE IF EXISTS entities_fts_trigram")
+    try:
+        cur.execute("""
+            CREATE VIRTUAL TABLE entities_fts_trigram USING fts5(
+                label_ja, label_en,
+                content='entities',
+                content_rowid='id',
+                tokenize='trigram'
+            )
+        """)
+        _has_trigram = True
+    except Exception:
+        _has_trigram = False
 
     # --- R-Tree ---
     cur.execute("DROP TABLE IF EXISTS entities_rtree")
@@ -176,11 +191,18 @@ def test_db_path():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, e)
 
-    # --- Populate FTS5 ---
+    # --- Populate FTS5 (unicode61) ---
     cur.execute("""
         INSERT INTO entities_fts(rowid, label_ja, label_en)
         SELECT id, label_ja, label_en FROM entities
     """)
+
+    # --- Populate FTS5 (trigram) ---
+    if _has_trigram:
+        cur.execute("""
+            INSERT INTO entities_fts_trigram(rowid, label_ja, label_en)
+            SELECT id, label_ja, label_en FROM entities
+        """)
 
     # --- Populate R-Tree ---
     cur.execute("""
@@ -743,3 +765,171 @@ class TestAnalyzeCulturalDensity:
                 assert "center_lat" in hotspot
                 assert "center_lon" in hotspot
                 assert "count" in hotspot
+
+
+# ---------------------------------------------------------------------------
+# Phase 18 Tool Tests — FTS5 Trigram, filter_by_release_year,
+# get_prefecture_profile, pilgrimage_timeline
+# ---------------------------------------------------------------------------
+
+class TestFTS5Trigram:
+    """Test FTS5 trigram tokenizer for CJK substring matching."""
+
+    def test_trigram_table_exists(self, test_db_path):
+        """FTS5 trigram table should exist."""
+        conn = sqlite3.connect(test_db_path)
+        row = conn.execute(
+            "SELECT name FROM sqlite_master WHERE name='entities_fts_trigram'"
+        ).fetchone()
+        conn.close()
+        if row is None:
+            pytest.skip("Trigram tokenizer not supported on this SQLite")
+        assert row[0] == "entities_fts_trigram"
+
+    def test_trigram_cjk_3char(self, test_db_path):
+        """Trigram should match 3+ char CJK queries."""
+        conn = sqlite3.connect(test_db_path)
+        row = conn.execute(
+            "SELECT name FROM sqlite_master WHERE name='entities_fts_trigram'"
+        ).fetchone()
+        if row is None:
+            conn.close()
+            pytest.skip("Trigram tokenizer not supported")
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM entities_fts_trigram WHERE entities_fts_trigram MATCH ?",
+            ("金閣寺",),
+        ).fetchall()
+        conn.close()
+        assert len(rows) >= 1
+        labels = [r["label_ja"] for r in rows]
+        assert any("金閣寺" in lbl for lbl in labels)
+
+    def test_trigram_english(self, test_db_path):
+        """Trigram should match English queries."""
+        conn = sqlite3.connect(test_db_path)
+        row = conn.execute(
+            "SELECT name FROM sqlite_master WHERE name='entities_fts_trigram'"
+        ).fetchone()
+        if row is None:
+            conn.close()
+            pytest.skip("Trigram tokenizer not supported")
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM entities_fts_trigram WHERE entities_fts_trigram MATCH ?",
+            ("Hokusai",),
+        ).fetchall()
+        conn.close()
+        assert len(rows) >= 1
+
+
+class TestFilterByReleaseYear:
+    """Test the filter_by_release_year tool."""
+
+    @pytest.mark.asyncio
+    async def test_year_range(self, _import_server):
+        srv = _import_server
+        result = await srv.filter_by_release_year(year_from=2000, year_to=2020)
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["query"]["year_from"] == 2000
+        assert data["query"]["year_to"] == 2020
+        for item in data.get("items", []):
+            assert 2000 <= item["release_year"] <= 2020
+
+    @pytest.mark.asyncio
+    async def test_entity_type_filter(self, _import_server):
+        srv = _import_server
+        result = await srv.filter_by_release_year(
+            year_from=1990, year_to=2025, entity_type="anime"
+        )
+        data = json.loads(result)
+        assert "error" not in data
+        for item in data.get("items", []):
+            assert item["entity_type"] == "anime"
+
+    @pytest.mark.asyncio
+    async def test_no_results(self, _import_server):
+        srv = _import_server
+        result = await srv.filter_by_release_year(year_from=1800, year_to=1800)
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["total_results"] == 0
+
+    @pytest.mark.asyncio
+    async def test_with_keyword(self, _import_server):
+        srv = _import_server
+        result = await srv.filter_by_release_year(keyword="Demon Slayer")
+        data = json.loads(result)
+        assert "error" not in data
+
+
+class TestGetPrefectureProfile:
+    """Test the get_prefecture_profile tool."""
+
+    @pytest.mark.asyncio
+    async def test_tokyo(self, _import_server):
+        srv = _import_server
+        result = await srv.get_prefecture_profile(prefecture="tokyo")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["prefecture"] == "tokyo"
+        assert data["prefecture_name"] == "東京都"
+        assert "entity_type_breakdown" in data
+        assert "total_geo_entities" in data
+
+    @pytest.mark.asyncio
+    async def test_kyoto(self, _import_server):
+        srv = _import_server
+        result = await srv.get_prefecture_profile(prefecture="kyoto")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["prefecture_name"] == "京都府"
+        assert "theme_distribution" in data
+        assert "pilgrimage_spots" in data
+
+    @pytest.mark.asyncio
+    async def test_unknown_prefecture(self, _import_server):
+        srv = _import_server
+        result = await srv.get_prefecture_profile(prefecture="atlantis")
+        data = json.loads(result)
+        assert "error" in data
+        assert "available_prefectures" in data
+
+    @pytest.mark.asyncio
+    async def test_has_release_year_dist(self, _import_server):
+        srv = _import_server
+        result = await srv.get_prefecture_profile(prefecture="tokyo")
+        data = json.loads(result)
+        if "error" not in data:
+            assert "release_year_distribution" in data
+
+
+class TestPilgrimageTimeline:
+    """Test the pilgrimage_timeline tool."""
+
+    @pytest.mark.asyncio
+    async def test_basic(self, _import_server):
+        srv = _import_server
+        result = await srv.pilgrimage_timeline()
+        data = json.loads(result)
+        assert "error" not in data
+        assert "timeline" in data
+        assert isinstance(data["timeline"], list)
+
+    @pytest.mark.asyncio
+    async def test_year_filter(self, _import_server):
+        srv = _import_server
+        result = await srv.pilgrimage_timeline(year_from=1990, year_to=2000)
+        data = json.loads(result)
+        assert "error" not in data
+        for entry in data.get("timeline", []):
+            assert 1990 <= entry["release_year"] <= 2000
+
+    @pytest.mark.asyncio
+    async def test_region_filter(self, _import_server):
+        srv = _import_server
+        result = await srv.pilgrimage_timeline(region="kanto")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["query"]["region"] == "kanto"

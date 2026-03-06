@@ -20,7 +20,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 DB_PATH = str(PROJECT_ROOT / "ontology" / "culture_ontology.db")
-OUTPUT_CSV = PROJECT_ROOT / "reports" / "phase17_codex_user_test.csv"
+OUTPUT_CSV = PROJECT_ROOT / "reports" / "phase18_codex_user_test.csv"
 OUTPUT_CSV.parent.mkdir(exist_ok=True)
 
 # Set DB_PATH env for server import
@@ -56,43 +56,43 @@ PERSONAS = [
         "id": "P1", "name": "観光プランナー",
         "context": "京都への訪日外国人向けツアーを企画している旅行代理店担当者",
         "questions": [
-            {"q": "京都で伝統工芸とアニメ聖地が近いエリアを教えて", "tool": "find_tourism_assets", "args": {"region": "kinki", "asset_types": ["temple", "shrine", "anime"]}},
-            {"q": "瀬戸内で文化資源密度が最も高い地域はどこ？", "tool": "analyze_cultural_density", "args": {"south": 33.8, "north": 34.8, "west": 132.0, "east": 134.5}},
+            {"q": "京都で伝統工芸とアニメ聖地が近いエリアを教えて", "tool": "find_tourism_assets", "args": {"region": "kinki", "asset_types": "temple,shrine"}},
+            {"q": "瀬戸内で文化資源密度が最も高い地域はどこ？", "tool": "analyze_cultural_density", "args": {"lat_min": 33.8, "lat_max": 34.8, "lon_min": 132.0, "lon_max": 134.5}},
             {"q": "スラムダンクの聖地・鎌倉高校前駅周辺の伝統文化施設は？", "tool": "get_nearby_culture", "args": {"lat": 35.3058, "lon": 139.4968, "radius_km": 5}},
-            {"q": "新潟ゆかりの文化人・芸術家を一覧して", "tool": "search_culture", "args": {"query": "新潟", "entity_types": ["person"], "limit": 20}},
-            {"q": "外国人に刺さる知られていない聖地を推薦して", "tool": "search_pilgrimage", "args": {"query": "聖地巡礼", "limit": 10}},
+            {"q": "新潟ゆかりの文化人・芸術家を一覧して", "tool": "search_culture", "args": {"keyword": "新潟"}},
+            {"q": "外国人に刺さる知られていない聖地を推薦して", "tool": "search_pilgrimage", "args": {"limit": 10}},
         ]
     },
     {
         "id": "P2", "name": "CCDM研究者",
         "context": "文化資本動態モデルを研究する経済学者",
         "questions": [
-            {"q": "1995年前後のアニメ聖地巡礼スポットの変化を教えて", "tool": "generate_timeline", "args": {"theme": "anime_tv", "year_from": 1990, "year_to": 2000}},
-            {"q": "都道府県別の文化資源カテゴリ分布を確認したい", "tool": "get_region_profile", "args": {"region": "kinki"}},
+            {"q": "1995年前後のアニメ聖地巡礼スポットの変化を教えて", "tool": "generate_timeline", "args": {"theme": "アニメ", "start_year": 1990, "end_year": 2000}},
+            {"q": "都道府県別の文化資源カテゴリ分布を確認したい", "tool": "get_prefecture_profile", "args": {"prefecture": "kyoto"}},
             {"q": "ポップカルチャーと伝統文化財が共存するケースを列挙して", "tool": "compare_cultures", "args": {"entity_a": "鬼滅の刃", "entity_b": "金閣寺"}},
-            {"q": "聖地スポットが多い都道府県を教えて", "tool": "search_pilgrimage", "args": {"query": "pilgrimage", "limit": 20}},
-            {"q": "release_year=2010前後のアニメ作品と聖地統計を出して", "tool": "search_culture", "args": {"query": "anime 2010", "entity_types": ["anime", "work"], "limit": 20}},
+            {"q": "聖地スポットが多い都道府県を教えて", "tool": "search_pilgrimage", "args": {"limit": 20}},
+            {"q": "release_year=2010前後のアニメ作品と聖地統計を出して", "tool": "filter_by_release_year", "args": {"year_from": 2008, "year_to": 2012, "entity_type": "anime"}},
         ]
     },
     {
         "id": "P3", "name": "アニメファン（外国人）",
         "context": "日本在住のアニメファン。好きな作品の聖地を効率よく巡りたい",
         "questions": [
-            {"q": "鬼滅の刃の舞台になった場所を教えて", "tool": "deep_dive", "args": {"entity_name": "鬼滅の刃", "max_recommendations": 10}},
+            {"q": "鬼滅の刃の舞台になった場所を教えて", "tool": "deep_dive", "args": {"entity": "鬼滅の刃", "max_recommendations": 10}},
             {"q": "ガールズ&パンツァーの聖地・大洗町周辺の観光スポットは？", "tool": "get_nearby_culture", "args": {"lat": 36.3133, "lon": 140.5764, "radius_km": 10}},
-            {"q": "東京近郊で複数の聖地を回れるルートを作って", "tool": "generate_culture_map", "args": {"theme": "anime_tv", "region": "kanto"}},
+            {"q": "東京近郊で複数の聖地を回れるルートを作って", "tool": "generate_culture_map", "args": {"theme": "アニメ", "region": "kanto"}},
             {"q": "エヴァンゲリオンゆかりの箱根エリアの文化施設を教えて", "tool": "get_nearby_culture", "args": {"lat": 35.2326, "lon": 139.1070, "radius_km": 10}},
-            {"q": "進撃の巨人ゆかりの大分県スポットは？", "tool": "search_culture", "args": {"query": "進撃の巨人 大分", "limit": 10}},
+            {"q": "進撃の巨人ゆかりの大分県スポットは？", "tool": "search_culture", "args": {"keyword": "進撃の巨人"}},
         ]
     },
     {
         "id": "P4", "name": "地方自治体職員",
         "context": "地方創生担当。自分の地域の文化資源を活用したコンテンツツーリズム施策を検討中",
         "questions": [
-            {"q": "高知県の文化資源を種類別に整理して", "tool": "get_region_profile", "args": {"region": "shikoku"}},
-            {"q": "鳥取県でアニメ・映画の撮影地になった場所は？", "tool": "search_culture", "args": {"query": "鳥取", "entity_types": ["work", "film", "anime"], "limit": 15}},
-            {"q": "島根県の伝統工芸と関連するポップカルチャー作品は？", "tool": "search_culture", "args": {"query": "島根 伝統工芸", "limit": 15}},
-            {"q": "四国4県の文化資源密度を比較して", "tool": "analyze_cultural_density", "args": {"south": 32.8, "north": 34.4, "west": 132.0, "east": 134.8}},
+            {"q": "高知県の文化資源を種類別に整理して", "tool": "get_prefecture_profile", "args": {"prefecture": "kochi"}},
+            {"q": "鳥取県でアニメ・映画の撮影地になった場所は？", "tool": "search_culture", "args": {"keyword": "鳥取"}},
+            {"q": "島根県の伝統工芸と関連するポップカルチャー作品は？", "tool": "search_culture", "args": {"keyword": "島根"}},
+            {"q": "四国4県の文化資源密度を比較して", "tool": "analyze_cultural_density", "args": {"lat_min": 32.8, "lat_max": 34.4, "lon_min": 132.0, "lon_max": 134.8}},
             {"q": "徳島県のコンテンツツーリズムのポテンシャルを評価して", "tool": "find_tourism_assets", "args": {"region": "shikoku"}},
         ]
     },
@@ -100,11 +100,11 @@ PERSONAS = [
         "id": "P5", "name": "データサイエンティスト",
         "context": "観光データ分析プロジェクト担当。プログラムでAPIを活用したい",
         "questions": [
-            {"q": "analyze_cultural_densityの使い方と出力形式を教えて", "tool": "analyze_cultural_density", "args": {"south": 34.9, "north": 35.1, "west": 135.7, "east": 135.9}},
-            {"q": "1990年以降のアニメ作品と関連聖地を一覧したい", "tool": "search_culture", "args": {"query": "anime", "entity_types": ["anime"], "limit": 30}},
-            {"q": "get_region_profileで返ってくるJSONの構造を教えて", "tool": "get_region_profile", "args": {"region": "tokyo"}},
-            {"q": "ポップ×伝統の接続データを取得するベストな方法は？", "tool": "search_connections", "args": {"entity_name": "歌舞伎", "limit": 10}},
-            {"q": "release_yearが付いたアニメ作品をフィルタして取得したい", "tool": "search_culture", "args": {"query": "アニメ 2019", "limit": 20}},
+            {"q": "analyze_cultural_densityの使い方と出力形式を教えて", "tool": "analyze_cultural_density", "args": {"lat_min": 34.9, "lat_max": 35.1, "lon_min": 135.7, "lon_max": 135.9}},
+            {"q": "1990年以降のアニメ作品と関連聖地を一覧したい", "tool": "filter_by_release_year", "args": {"year_from": 1990, "entity_type": "anime", "limit": 30}},
+            {"q": "get_prefecture_profileで返ってくるJSONの構造を教えて", "tool": "get_prefecture_profile", "args": {"prefecture": "tokyo"}},
+            {"q": "聖地巡礼の時系列変化を見たい", "tool": "pilgrimage_timeline", "args": {"year_from": 2000, "year_to": 2024}},
+            {"q": "release_yearが付いたアニメ作品をフィルタして取得したい", "tool": "filter_by_release_year", "args": {"year_from": 2019, "year_to": 2019, "entity_type": "anime"}},
         ]
     },
 ]
@@ -138,11 +138,33 @@ def evaluate_response(response_text, question):
         data = None
         is_json = False
 
-    # --- Relevance: does the response contain keywords from the question? ---
-    q_keywords = set(question.replace("？", "").replace("を", "").replace("の", "").split())
-    matched_kw = sum(1 for kw in q_keywords if kw in response_text)
-    kw_ratio = matched_kw / max(len(q_keywords), 1)
-    scores["relevance"] = min(5, max(1, int(1 + kw_ratio * 4)))
+    # --- Relevance: CJK n-gram overlap for Japanese text ---
+    import re as _re
+
+    # Build searchable text: flatten all JSON string values
+    search_text = response_text
+    if is_json:
+        def _extract_strings(obj):
+            strs = []
+            if isinstance(obj, str):
+                strs.append(obj)
+            elif isinstance(obj, dict):
+                for v in obj.values():
+                    strs.extend(_extract_strings(v))
+            elif isinstance(obj, list):
+                for v in obj:
+                    strs.extend(_extract_strings(v))
+            return strs
+        search_text = " ".join(_extract_strings(data))
+
+    # Split question on common particles, then extract 2+ char CJK segments
+    q_cleaned = _re.sub(r'[のをはがでとにもへやかなるたてれいうえお？！。、]', ' ', question)
+    q_segments = [s for s in _re.findall(r'[\u3040-\u9fff\uff00-\uffef]{2,}', q_cleaned)]
+    if not q_segments:
+        q_segments = question.replace("？", "").split()
+    matched_seg = sum(1 for seg in q_segments if seg in search_text)
+    seg_ratio = matched_seg / max(len(q_segments), 1)
+    scores["relevance"] = min(5, max(1, int(1 + seg_ratio * 4)))
 
     # --- Completeness: response length and data richness ---
     if resp_len > 5000:
