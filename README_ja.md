@@ -1,23 +1,25 @@
 # Japan Culture MCP Server (日本文化MCPサーバー)
 
-![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue)
+[![Version](https://img.shields.io/badge/version-v1.3.0-green)](https://github.com/Rei02061986/japan-culture-mcp/releases/tag/v1.3.0)
+![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![MCP](https://img.shields.io/badge/MCP-1.0%2B-green)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
-![Entities: 10M+](https://img.shields.io/badge/Entities-10M%2B-red)
-![Tools: 39](https://img.shields.io/badge/Tools-39-purple)
+![Entities: 8.3M](https://img.shields.io/badge/Entities-8.3M-red)
+![Tools: 45](https://img.shields.io/badge/Tools-45-purple)
 ![Geo: 750K+](https://img.shields.io/badge/Geo-750K%2B-orange)
 
-AIアシスタントに日本文化の深い知識へのアクセスを提供するModel Context Protocol (MCP) サーバーです。**1,000万以上のエンティティ**と**390万以上の文化的接続**を持つオントロジーDBを搭載し、古典文化から現代サブカルチャーまで**156以上の権威あるデータソース**から横断検索が可能です。
+AIアシスタントに日本文化の深い知識へのアクセスを提供するModel Context Protocol (MCP) サーバーです。**834万以上のエンティティ**と**765万以上の文化的接続**を持つオントロジーDBを搭載し、古典文化から現代サブカルチャーまで**156以上の権威あるデータソース**から横断検索が可能です。
 
 ## 特徴
 
-- **1,000万以上のエンティティ**: アニメ、漫画、浮世絵、寺社、祭り、文学、伝統工芸、人間国宝、博物館コレクションなど
-- **390万以上の接続**: テーマ・時代・媒体・地理・体験を超えた「意外な繋がり」を発見する文化的セレンディピティグラフ
-- **39のMCPツール**: 検索、発見、比較、マッピング、観光分析、探索の包括的機能
-- **FTS5全文検索**: LIKE検索の225倍高速（4ms vs 900ms）で日本語・英語テキストを検索
+- **834万以上のエンティティ**: アニメ、漫画、浮世絵、寺社、祭り、文学、伝統工芸、人間国宝、博物館コレクションなど
+- **765万以上の接続**: テーマ・時代・媒体・地理・体験を超えた「意外な繋がり」を発見する文化的セレンディピティグラフ
+- **45のMCPツール**: 検索、発見、比較、マッピング、観光分析、CCDM分析、データエクスポートの包括的機能
+- **FTS5全文検索**: trigramトークナイザでCJK部分一致に対応、unicode61とのハイブリッド検索
 - **R-Tree空間インデックス**: **750,000以上**の位置情報付きエンティティの高速地理検索
-- **聖地巡礼対応**: 3,900以上のアニメ・映画聖地巡礼スポットとルート生成
-- **観光分析**: 地域プロファイル、観光資産検索、文化密度ヒートマップ
+- **聖地巡礼対応**: 65,000以上のアニメ・映画聖地巡礼接続とルート生成・タイムライン
+- **観光分析**: 地域プロファイル、47都道府県プロファイル、観光資産検索、文化密度ヒートマップ
+- **CCDM研究**: エマージェンス分析、K^Iプロキシ指標、一括地域比較、データセットエクスポート
 - **156以上のデータソース**: ジャパンサーチ、Wikidata、MADB、AniList、NDL、OSM、DBpediaなど
 - **5軸オントロジー**: テーマ（83値）、時代（10）、媒体（18）、地理（13）、体験（9）
 

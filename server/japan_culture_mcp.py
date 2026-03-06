@@ -3,7 +3,8 @@
 AniList + MADB + JapanSearch + Wikidata + NDL + DBpedia + GSI + Google Maps + ToMuCo + 国土数値情報
 10,000,000+エンティティ、800,000+文化的接続（64,000+聖地巡礼）のオントロジーDB搭載
 FTS5全文検索(trigram CJK対応) + R-Tree空間インデックスによる高速検索
-Phase 18: FTS5 trigram CJK修正、release_yearフィルタ、都道府県プロファイル、聖地タイムライン追加
+Phase 18: FTS5 trigram CJK修正、release_yearフィルタ、都道府県プロファイル、聖地タイムライン、
+一括地域比較、CCDMエマージェンス分析、データセットエクスポート追加（45ツール）
 """
 
 import asyncio
@@ -22,9 +23,10 @@ mcp = FastMCP(
         "10,000,000+エンティティと800,000+文化的接続（64,000+聖地巡礼接続含む）を持つオントロジーDBを搭載。"
         "5軸（テーマ・時代・媒体・地理・体験）で文化的セレンディピティを発見。"
         "160+ソースを統合: JapanSearch, Wikidata, MADB, AniList, NDL, MusicBrainz, DBpedia, ToMuCo, OSM, 国土数値情報, 地理院タイル, Google Maps。"
-        "古典文化（浮世絵・古典籍・文化財・伝統工芸）から現代サブカルチャー（アニメ・漫画・ゲーム）まで42ツールで横断検索可能。"
+        "古典文化（浮世絵・古典籍・文化財・伝統工芸）から現代サブカルチャー（アニメ・漫画・ゲーム）まで45ツールで横断検索可能。"
         "FTS5 trigram全文検索(CJK部分一致対応) + R-Tree空間インデックスで高速検索。"
-        "聖地巡礼検索・ルート生成・周辺文化検索・release_yearフィルタ・都道府県プロファイル・聖地タイムラインにも対応。"
+        "聖地巡礼検索・ルート生成・周辺文化検索・release_yearフィルタ・都道府県プロファイル・聖地タイムライン・"
+        "一括地域比較・CCDMエマージェンス分析・データセットエクスポートにも対応。"
     ),
 )
 
@@ -2031,6 +2033,35 @@ async def search_culture(
         s.get("count", 0) for s in results["sources"].values() if isinstance(s, dict) and "count" in s
     )
     results["total_results"] = total
+
+    # Next steps suggestion based on results
+    next_steps = []
+    db_items = results.get("sources", {}).get("ontology_db", {}).get("items", [])
+    has_works = any(i.get("entity_type") in ("work", "anime", "manga", "game") for i in db_items)
+    has_places = any(i.get("entity_type") == "place" for i in db_items)
+
+    if has_works:
+        next_steps.append({
+            "tool": "search_pilgrimage",
+            "reason": "この作品の聖地巡礼スポットを検索できます",
+        })
+    if has_places:
+        next_steps.append({
+            "tool": "get_nearby_culture",
+            "reason": "この場所の周辺文化資源を検索できます",
+        })
+    if total == 0:
+        next_steps.append({
+            "tool": "get_prefecture_profile",
+            "reason": "地域名での検索をお試しください",
+        })
+    if total > 0:
+        next_steps.append({
+            "tool": "deep_dive",
+            "reason": "特定のエンティティの詳細情報を取得できます",
+        })
+    results["next_steps"] = next_steps
+
     return json.dumps(results, ensure_ascii=False, indent=2)
 
 
@@ -4864,6 +4895,390 @@ async def pilgrimage_timeline(
         }, ensure_ascii=False, indent=2)
     except Exception as e:
         return json.dumps({"error": f"pilgrimage_timeline failed: {str(e)}"})
+
+
+# ══════════════════════════════════════════════════════════
+# Phase 18 Stream 5 Tools — Bulk API, CCDM Analysis, Export (v1.3.0)
+# ══════════════════════════════════════════════════════════
+
+# ── 43. bulk_region_profiles ──────────────────────────────
+
+@mcp.tool()
+async def bulk_region_profiles(
+    prefectures: str = None,
+    include_pilgrimage: bool = True,
+) -> str:
+    """複数都道府県の文化プロファイルを一括取得して比較する。
+
+    地域間比較やCCDMの地域分析に使用。都道府県を指定しない場合は全47都道府県を対象にする。
+
+    Args:
+        prefectures: カンマ区切りの都道府県コード（例: "tokyo,kyoto,osaka"）。
+                     未指定で全47都道府県。
+        include_pilgrimage: 聖地巡礼スポット数を含める（デフォルト: True）。
+    """
+    try:
+        db = _get_db()
+
+        if prefectures:
+            codes = [p.strip().lower() for p in prefectures.split(",")]
+            invalid = [c for c in codes if c not in _PREFECTURE_DEFS]
+            if invalid:
+                return json.dumps({
+                    "error": f"Unknown prefectures: {invalid}",
+                    "available_prefectures": list(_PREFECTURE_DEFS.keys()),
+                }, ensure_ascii=False)
+        else:
+            codes = list(_PREFECTURE_DEFS.keys())
+
+        profiles = {}
+        for code in codes:
+            name_ja, center_lat, center_lon, radius_km = _PREFECTURE_DEFS[code]
+            lat_offset = radius_km / 111.0
+            lon_offset = radius_km / (111.0 * max(math.cos(math.radians(center_lat)), 0.01))
+            bb = (center_lat - lat_offset, center_lat + lat_offset,
+                  center_lon - lon_offset, center_lon + lon_offset)
+
+            # Entity count by type
+            rows = db.execute("""
+                SELECT entity_type, COUNT(*) as cnt
+                FROM entities
+                WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?
+                  AND is_dormant = 0
+                GROUP BY entity_type ORDER BY cnt DESC
+            """, bb).fetchall()
+
+            type_breakdown = {}
+            total = 0
+            for r in rows:
+                type_breakdown[r["entity_type"] or "unknown"] = r["cnt"]
+                total += r["cnt"]
+
+            profile = {
+                "name_ja": name_ja,
+                "total_entities": total,
+                "entity_types": type_breakdown,
+            }
+
+            if include_pilgrimage:
+                pc = db.execute("""
+                    SELECT COUNT(DISTINCT e.id)
+                    FROM entities e
+                    JOIN connections c ON (c.entity_a_id = e.id OR c.entity_b_id = e.id)
+                    WHERE e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+                      AND c.connection_type LIKE 'pilgrimage%'
+                      AND e.is_dormant = 0
+                """, bb).fetchone()[0]
+                profile["pilgrimage_spots"] = pc
+
+            profiles[code] = profile
+
+        # Comparison rankings
+        sorted_total = sorted(profiles.items(), key=lambda x: -x[1]["total_entities"])
+        comparison = {
+            "most_entities": sorted_total[0][0] if sorted_total else None,
+            "least_entities": sorted_total[-1][0] if sorted_total else None,
+            "entity_count_ranking": [
+                {"prefecture": k, "count": v["total_entities"]}
+                for k, v in sorted_total[:10]
+            ],
+        }
+        if include_pilgrimage:
+            sorted_pilg = sorted(profiles.items(), key=lambda x: -x[1].get("pilgrimage_spots", 0))
+            comparison["most_pilgrimage"] = sorted_pilg[0][0] if sorted_pilg else None
+            comparison["pilgrimage_ranking"] = [
+                {"prefecture": k, "count": v.get("pilgrimage_spots", 0)}
+                for k, v in sorted_pilg[:10]
+            ]
+
+        return json.dumps({
+            "source": "ontology_db (bulk_region_profiles)",
+            "prefecture_count": len(profiles),
+            "profiles": profiles,
+            "comparison": comparison,
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"bulk_region_profiles failed: {str(e)}"})
+
+
+# ── 44. ccdm_emergence_analysis ───────────────────────────
+
+@mcp.tool()
+async def ccdm_emergence_analysis(
+    region: str = None,
+    year_from: int = 1980,
+    year_to: int = 2025,
+    medium: str = None,
+) -> str:
+    """CCDMのEmergenceフェーズを定量化する専用分析ツール。
+
+    年ごとの新規作品数・新規聖地数・累積聖地数を時系列で返す。
+    K^I（無形文化資本）プロキシ指標も計算する。
+
+    Args:
+        region: 都道府県コード（例: "kyoto"）。未指定で全国。
+        year_from: 開始年（デフォルト: 1980）。
+        year_to: 終了年（デフォルト: 2025）。
+        medium: メディアフィルタ（例: "anime_tv", "manga", "game"）。
+    """
+    try:
+        db = _get_db()
+
+        # Build pilgrimage query with optional region filter
+        where_clauses = [
+            "c.connection_type LIKE 'pilgrimage%'",
+            "w.is_dormant = 0",
+            "w.release_year IS NOT NULL",
+            "w.release_year BETWEEN ? AND ?",
+        ]
+        params = [year_from, year_to]
+
+        if region:
+            r = region.lower().strip()
+            if r in _PREFECTURE_DEFS:
+                name_ja, clat, clon, rad = _PREFECTURE_DEFS[r]
+                lat_off = rad / 111.0
+                lon_off = rad / (111.0 * max(math.cos(math.radians(clat)), 0.01))
+                where_clauses.append("loc.lat BETWEEN ? AND ? AND loc.lon BETWEEN ? AND ?")
+                params.extend([clat - lat_off, clat + lat_off, clon - lon_off, clon + lon_off])
+
+        if medium:
+            where_clauses.append("""
+                EXISTS (SELECT 1 FROM entity_tags et
+                        WHERE et.entity_id = w.id AND et.axis = 'medium' AND et.value_code = ?)
+            """)
+            params.append(medium)
+
+        where_sql = " AND ".join(where_clauses)
+
+        rows = db.execute(f"""
+            SELECT w.release_year,
+                   w.id as work_id, w.label_ja as work_name,
+                   loc.id as loc_id, loc.label_ja as loc_name
+            FROM connections c
+            JOIN entities w ON c.entity_a_id = w.id
+            JOIN entities loc ON c.entity_b_id = loc.id
+            WHERE {where_sql}
+            UNION
+            SELECT w.release_year,
+                   w.id as work_id, w.label_ja as work_name,
+                   loc.id as loc_id, loc.label_ja as loc_name
+            FROM connections c
+            JOIN entities w ON c.entity_b_id = w.id
+            JOIN entities loc ON c.entity_a_id = loc.id
+            WHERE {where_sql}
+        """, params + params).fetchall()
+
+        # Group by year
+        year_data = {}
+        all_works = set()
+        all_locs = set()
+        for yr in range(year_from, year_to + 1):
+            year_data[yr] = {"works": set(), "locations": set()}
+
+        for r in rows:
+            yr = r["release_year"]
+            if yr in year_data:
+                year_data[yr]["works"].add(r["work_id"])
+                year_data[yr]["locations"].add(r["loc_id"])
+                all_works.add(r["work_id"])
+                all_locs.add(r["loc_id"])
+
+        # Build timeline
+        timeline = []
+        cumulative_works = set()
+        cumulative_locs = set()
+        for yr in range(year_from, year_to + 1):
+            new_works = year_data[yr]["works"] - cumulative_works
+            new_locs = year_data[yr]["locations"] - cumulative_locs
+            cumulative_works |= year_data[yr]["works"]
+            cumulative_locs |= year_data[yr]["locations"]
+            timeline.append({
+                "year": yr,
+                "new_works": len(new_works),
+                "new_pilgrimage_spots": len(new_locs),
+                "cumulative_works": len(cumulative_works),
+                "cumulative_spots": len(cumulative_locs),
+            })
+
+        # K^I proxy (diversity / density)
+        # Shannon entropy of entity types across all locations
+        if all_locs:
+            type_counts = db.execute("""
+                SELECT entity_type, COUNT(*) as cnt
+                FROM entities WHERE id IN ({})
+                GROUP BY entity_type
+            """.format(",".join("?" * len(all_locs))), list(all_locs)).fetchall()
+
+            total_tc = sum(t["cnt"] for t in type_counts)
+            entropy = 0.0
+            for t in type_counts:
+                p = t["cnt"] / total_tc
+                if p > 0:
+                    entropy -= p * math.log(p)
+            diversity_index = round(entropy, 3)
+        else:
+            diversity_index = 0.0
+
+        # Pop-traditional co-occurrence
+        pop_trad = 0
+        if all_locs:
+            pop_trad = db.execute("""
+                SELECT COUNT(*) FROM connections
+                WHERE connection_type IN ('pop_traditional', 'cross_type_label_match')
+                  AND (entity_a_id IN ({ids}) OR entity_b_id IN ({ids}))
+            """.format(ids=",".join("?" * len(all_locs))), list(all_locs) + list(all_locs)).fetchone()[0]
+
+        # Peak year
+        peak_year = max(timeline, key=lambda x: x["new_pilgrimage_spots"])["year"] if timeline else None
+        span = year_to - year_from + 1
+        emergence_rate = round(len(all_locs) / span, 2) if span > 0 else 0
+
+        return json.dumps({
+            "source": "ontology_db (ccdm_emergence_analysis)",
+            "query": {"region": region, "year_from": year_from, "year_to": year_to, "medium": medium},
+            "total_works": len(all_works),
+            "total_pilgrimage_spots": len(all_locs),
+            "emergence_timeline": timeline,
+            "peak_year": peak_year,
+            "emergence_rate": emergence_rate,
+            "k_i_proxy": {
+                "diversity_index": diversity_index,
+                "pilgrimage_density": round(len(all_locs) / max(len(all_works), 1), 2),
+                "pop_trad_cooccurrence": pop_trad,
+            },
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"ccdm_emergence_analysis failed: {str(e)}"})
+
+
+# ── 45. export_dataset ────────────────────────────────────
+
+@mcp.tool()
+async def export_dataset(
+    dataset_type: str,
+    prefecture: str = None,
+    limit: int = 500,
+) -> str:
+    """分析用データセットをJSON形式でエクスポートする。
+
+    データサイエンティスト・研究者向けの構造化データ出力。
+
+    Args:
+        dataset_type: データセット種別。
+            "pilgrimage" — 聖地巡礼データ（作品×スポット×座標）
+            "release_year" — 公開年付きエンティティ一覧
+            "pop_trad" — ポップ×伝統文化の交差接続
+            "geo_culture" — 座標付き文化資源
+        prefecture: 都道府県コードでフィルタ（任意、例: "kyoto"）。
+        limit: 最大件数（デフォルト: 500）。
+    """
+    try:
+        db = _get_db()
+        valid_types = ("pilgrimage", "release_year", "pop_trad", "geo_culture")
+        if dataset_type not in valid_types:
+            return json.dumps({
+                "error": f"Invalid dataset_type: {dataset_type}",
+                "valid_types": list(valid_types),
+            })
+
+        # Optional prefecture bounding box
+        bb = None
+        if prefecture:
+            pref = prefecture.lower().strip()
+            if pref in _PREFECTURE_DEFS:
+                name_ja, clat, clon, rad = _PREFECTURE_DEFS[pref]
+                lat_off = rad / 111.0
+                lon_off = rad / (111.0 * max(math.cos(math.radians(clat)), 0.01))
+                bb = (clat - lat_off, clat + lat_off, clon - lon_off, clon + lon_off)
+
+        data = []
+
+        if dataset_type == "pilgrimage":
+            geo_filter = ""
+            params = []
+            if bb:
+                geo_filter = "AND loc.lat BETWEEN ? AND ? AND loc.lon BETWEEN ? AND ?"
+                params = list(bb)
+            rows = db.execute(f"""
+                SELECT w.label_ja as work_name, w.label_en as work_name_en,
+                       w.entity_type as work_type, w.release_year,
+                       loc.label_ja as location_name, loc.label_en as location_name_en,
+                       loc.lat, loc.lon, c.connection_type
+                FROM connections c
+                JOIN entities w ON c.entity_a_id = w.id
+                JOIN entities loc ON c.entity_b_id = loc.id
+                WHERE c.connection_type LIKE 'pilgrimage%'
+                  AND w.is_dormant = 0 AND loc.is_dormant = 0
+                  {geo_filter}
+                LIMIT ?
+            """, params + [limit]).fetchall()
+            data = [dict(r) for r in rows]
+
+        elif dataset_type == "release_year":
+            geo_filter = ""
+            params = []
+            if bb:
+                geo_filter = "AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?"
+                params = list(bb)
+            rows = db.execute(f"""
+                SELECT label_ja, label_en, entity_type, release_year, release_year_source, source
+                FROM entities
+                WHERE release_year IS NOT NULL AND is_dormant = 0
+                  {geo_filter}
+                ORDER BY release_year DESC
+                LIMIT ?
+            """, params + [limit]).fetchall()
+            data = [dict(r) for r in rows]
+
+        elif dataset_type == "pop_trad":
+            geo_filter = ""
+            params = []
+            if bb:
+                geo_filter = """AND (EXISTS (SELECT 1 FROM entities e2
+                     WHERE e2.id = c.entity_a_id AND e2.lat BETWEEN ? AND ? AND e2.lon BETWEEN ? AND ?)
+                  OR EXISTS (SELECT 1 FROM entities e3
+                     WHERE e3.id = c.entity_b_id AND e3.lat BETWEEN ? AND ? AND e3.lon BETWEEN ? AND ?))"""
+                params = list(bb) + list(bb)
+            rows = db.execute(f"""
+                SELECT a.label_ja as entity_a, a.entity_type as type_a,
+                       b.label_ja as entity_b, b.entity_type as type_b,
+                       c.connection_type, c.explanation, c.confidence
+                FROM connections c
+                JOIN entities a ON c.entity_a_id = a.id
+                JOIN entities b ON c.entity_b_id = b.id
+                WHERE c.connection_type IN ('pop_traditional', 'cross_type_label_match')
+                  AND a.is_dormant = 0 AND b.is_dormant = 0
+                  {geo_filter}
+                LIMIT ?
+            """, params + [limit]).fetchall()
+            data = [dict(r) for r in rows]
+
+        elif dataset_type == "geo_culture":
+            geo_filter = ""
+            params = []
+            if bb:
+                geo_filter = "AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?"
+                params = list(bb)
+            rows = db.execute(f"""
+                SELECT label_ja, label_en, entity_type, lat, lon, source
+                FROM entities
+                WHERE lat IS NOT NULL AND lon IS NOT NULL AND is_dormant = 0
+                  {geo_filter}
+                LIMIT ?
+            """, params + [limit]).fetchall()
+            data = [dict(r) for r in rows]
+
+        return json.dumps({
+            "source": "ontology_db (export_dataset)",
+            "dataset_type": dataset_type,
+            "prefecture": prefecture,
+            "count": len(data),
+            "limit": limit,
+            "data": data,
+        }, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"error": f"export_dataset failed: {str(e)}"})
 
 
 # ── Entry point ────────────────────────────────────────────

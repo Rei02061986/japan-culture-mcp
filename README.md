@@ -1,23 +1,25 @@
 # Japan Culture MCP Server
 
-![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue)
+[![Version](https://img.shields.io/badge/version-v1.3.0-green)](https://github.com/Rei02061986/japan-culture-mcp/releases/tag/v1.3.0)
+![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![MCP](https://img.shields.io/badge/MCP-1.0%2B-green)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
-![Entities: 10M+](https://img.shields.io/badge/Entities-10M%2B-red)
-![Tools: 39](https://img.shields.io/badge/Tools-39-purple)
+![Entities: 8.3M](https://img.shields.io/badge/Entities-8.3M-red)
+![Tools: 45](https://img.shields.io/badge/Tools-45-purple)
 ![Geo: 750K+](https://img.shields.io/badge/Geo-750K%2B-orange)
 
-A Model Context Protocol (MCP) server that provides AI assistants with deep access to Japanese cultural knowledge. Powered by an ontology database of **10,000,000+ entities** and **3,900,000+ cultural connections** spanning from ancient classical arts to modern subculture, sourced from **156+ authoritative databases**.
+A Model Context Protocol (MCP) server that provides AI assistants with deep access to Japanese cultural knowledge. Powered by an ontology database of **8,340,000+ entities** and **7,650,000+ cultural connections** spanning from ancient classical arts to modern subculture, sourced from **156+ authoritative databases**.
 
 ## Features
 
-- **10M+ Entities**: Anime, manga, ukiyo-e, temples, shrines, festivals, literature, crafts, national treasures, museums, and more
-- **3.9M+ Connections**: Cultural serendipity graph linking seemingly unrelated cultural elements across themes, eras, media, geography, and experience
-- **39 MCP Tools**: Comprehensive search, discovery, comparison, mapping, tourism, and exploration capabilities
-- **FTS5 Full-Text Search**: 225x faster than LIKE queries (4ms vs 900ms) for Japanese/English text
+- **8.3M+ Entities**: Anime, manga, ukiyo-e, temples, shrines, festivals, literature, crafts, national treasures, museums, and more
+- **7.6M+ Connections**: Cultural serendipity graph linking seemingly unrelated cultural elements across themes, eras, media, geography, and experience
+- **45 MCP Tools**: Comprehensive search, discovery, comparison, mapping, tourism, CCDM analysis, bulk export, and exploration
+- **FTS5 Full-Text Search**: Hybrid trigram (CJK substring matching) + unicode61 tokenizer — sub-millisecond queries
 - **R-Tree Spatial Index**: Lightning-fast geographic queries for **750K+ geolocated entities**
-- **Pilgrimage Support**: 3,900+ anime/film pilgrimage locations with route generation
-- **Tourism Analysis**: Region profiles, tourism asset discovery, cultural density heatmaps
+- **Pilgrimage Support**: 65,000+ anime/film pilgrimage connections with route generation and timeline
+- **Tourism Analysis**: Region profiles, prefecture profiles (47 prefectures), tourism asset discovery, cultural density heatmaps
+- **CCDM Research**: Emergence analysis, K^I proxy indicators, bulk region comparison, dataset export
 - **156+ Data Sources**: JapanSearch, Wikidata, MADB, AniList, NDL, OSM, DBpedia, and many more
 - **5-Axis Ontology**: Theme (83 values), Era (10), Medium (18), Geography (13), Experience (9)
 

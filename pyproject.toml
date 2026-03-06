@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "japan-culture-mcp"
-version = "1.2.0"
-description = "Japanese culture knowledge graph MCP server with 10M+ entities, 750K+ geolocated, 39 tools"
+version = "1.3.0"
+description = "Japanese culture knowledge graph MCP server with 8.3M+ entities, 750K+ geolocated, 45 tools"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"

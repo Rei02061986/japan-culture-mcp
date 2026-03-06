@@ -247,6 +247,7 @@ def test_db_path():
         (14, 15, "pilgrimage_proximity", 0.3, 0.3, 0.3, 0.0, 0.2, 0.5, "Both in Kamakura area", "E4", 0.8, "keep"),
         (18, 19, "geographic_cultural", 0.1, 0.1, 0.2, 0.0, 0.1, 0.55, "Todai-ji is adjacent to Nara Park", "E1", 0.9, "keep"),
         (5, 10, "geographic_cultural", 0.2, 0.2, 0.3, 0.0, 0.2, 0.5, "Kabuki flourishes in Kyoto", "D4", 0.7, "keep"),
+        (7, 3, "pop_traditional", 0.3, 0.5, 0.8, 0.0, 0.3, 0.7, "Demon Slayer references Kinkaku-ji", "D1", 0.6, "keep"),
     ]
     cur.executemany("""
         INSERT INTO connections
@@ -933,3 +934,171 @@ class TestPilgrimageTimeline:
         data = json.loads(result)
         assert "error" not in data
         assert data["query"]["region"] == "kanto"
+
+
+# ---------------------------------------------------------------------------
+# Phase 18 Stream 5 Tests — bulk_region_profiles, ccdm_emergence_analysis,
+# export_dataset, search_culture next_steps
+# ---------------------------------------------------------------------------
+
+class TestBulkRegionProfiles:
+    """Test the bulk_region_profiles tool."""
+
+    @pytest.mark.asyncio
+    async def test_specific_prefectures(self, _import_server):
+        srv = _import_server
+        result = await srv.bulk_region_profiles(prefectures="tokyo,kyoto")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["prefecture_count"] == 2
+        assert "tokyo" in data["profiles"]
+        assert "kyoto" in data["profiles"]
+        assert "comparison" in data
+
+    @pytest.mark.asyncio
+    async def test_all_prefectures(self, _import_server):
+        srv = _import_server
+        result = await srv.bulk_region_profiles()
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["prefecture_count"] == 47
+        assert "comparison" in data
+        assert "entity_count_ranking" in data["comparison"]
+
+    @pytest.mark.asyncio
+    async def test_invalid_prefecture(self, _import_server):
+        srv = _import_server
+        result = await srv.bulk_region_profiles(prefectures="atlantis")
+        data = json.loads(result)
+        assert "error" in data
+
+    @pytest.mark.asyncio
+    async def test_with_pilgrimage(self, _import_server):
+        srv = _import_server
+        result = await srv.bulk_region_profiles(
+            prefectures="tokyo", include_pilgrimage=True
+        )
+        data = json.loads(result)
+        assert "error" not in data
+        profile = data["profiles"]["tokyo"]
+        assert "pilgrimage_spots" in profile
+
+
+class TestCCDMEmergenceAnalysis:
+    """Test the ccdm_emergence_analysis tool."""
+
+    @pytest.mark.asyncio
+    async def test_basic(self, _import_server):
+        srv = _import_server
+        result = await srv.ccdm_emergence_analysis(year_from=1990, year_to=2025)
+        data = json.loads(result)
+        assert "error" not in data
+        assert "emergence_timeline" in data
+        assert "k_i_proxy" in data
+        assert "diversity_index" in data["k_i_proxy"]
+        assert "pilgrimage_density" in data["k_i_proxy"]
+
+    @pytest.mark.asyncio
+    async def test_with_region(self, _import_server):
+        srv = _import_server
+        result = await srv.ccdm_emergence_analysis(region="tokyo", year_from=2000, year_to=2020)
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["query"]["region"] == "tokyo"
+
+    @pytest.mark.asyncio
+    async def test_emergence_rate(self, _import_server):
+        srv = _import_server
+        result = await srv.ccdm_emergence_analysis(year_from=2000, year_to=2020)
+        data = json.loads(result)
+        assert "error" not in data
+        assert "emergence_rate" in data
+        assert isinstance(data["emergence_rate"], (int, float))
+
+
+class TestExportDataset:
+    """Test the export_dataset tool."""
+
+    @pytest.mark.asyncio
+    async def test_pilgrimage(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="pilgrimage")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["dataset_type"] == "pilgrimage"
+        assert "data" in data
+        assert isinstance(data["data"], list)
+
+    @pytest.mark.asyncio
+    async def test_release_year(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="release_year", limit=10)
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["dataset_type"] == "release_year"
+        for item in data.get("data", []):
+            assert "release_year" in item
+
+    @pytest.mark.asyncio
+    async def test_pop_trad(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="pop_trad")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["dataset_type"] == "pop_trad"
+
+    @pytest.mark.asyncio
+    async def test_geo_culture(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="geo_culture", limit=5)
+        data = json.loads(result)
+        assert "error" not in data
+        for item in data.get("data", []):
+            assert item["lat"] is not None
+            assert item["lon"] is not None
+
+    @pytest.mark.asyncio
+    async def test_invalid_type(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="invalid_type")
+        data = json.loads(result)
+        assert "error" in data
+        assert "valid_types" in data
+
+    @pytest.mark.asyncio
+    async def test_with_prefecture_filter(self, _import_server):
+        srv = _import_server
+        result = await srv.export_dataset(dataset_type="geo_culture", prefecture="kyoto")
+        data = json.loads(result)
+        assert "error" not in data
+        assert data["prefecture"] == "kyoto"
+
+
+class TestSearchCultureNextSteps:
+    """Test that search_culture returns next_steps suggestions."""
+
+    @pytest.mark.asyncio
+    async def test_has_next_steps(self, _import_server):
+        srv = _import_server
+        result = await srv.search_culture(keyword="鬼滅の刃", sources="db_only")
+        data = json.loads(result)
+        assert "next_steps" in data
+        assert isinstance(data["next_steps"], list)
+
+    @pytest.mark.asyncio
+    async def test_work_suggests_pilgrimage(self, _import_server):
+        srv = _import_server
+        result = await srv.search_culture(keyword="鬼滅の刃", sources="db_only")
+        data = json.loads(result)
+        if data.get("total_results", 0) > 0:
+            tool_names = [s["tool"] for s in data.get("next_steps", [])]
+            assert "search_pilgrimage" in tool_names or "deep_dive" in tool_names
+
+    @pytest.mark.asyncio
+    async def test_no_results_suggests_prefecture(self, _import_server):
+        srv = _import_server
+        result = await srv.search_culture(keyword="xyznonexistent12345", sources="db_only")
+        data = json.loads(result)
+        if data.get("total_results", 0) == 0:
+            tool_names = [s["tool"] for s in data.get("next_steps", [])]
+            assert "get_prefecture_profile" in tool_names
