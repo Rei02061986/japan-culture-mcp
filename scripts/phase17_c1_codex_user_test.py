@@ -56,10 +56,10 @@ PERSONAS = [
         "id": "P1", "name": "観光プランナー",
         "context": "京都への訪日外国人向けツアーを企画している旅行代理店担当者",
         "questions": [
-            {"q": "京都で伝統工芸とアニメ聖地が近いエリアを教えて", "tool": "find_tourism_assets", "args": {"region": "kinki", "asset_types": "temple,shrine"}},
+            {"q": "京都で伝統工芸とアニメ聖地が近いエリアを教えて", "tool": "find_tourism_assets", "args": {"region": "kinki", "asset_types": "shrine,temple,pilgrimage"}},
             {"q": "瀬戸内で文化資源密度が最も高い地域はどこ？", "tool": "analyze_cultural_density", "args": {"lat_min": 33.8, "lat_max": 34.8, "lon_min": 132.0, "lon_max": 134.5}},
             {"q": "スラムダンクの聖地・鎌倉高校前駅周辺の伝統文化施設は？", "tool": "get_nearby_culture", "args": {"lat": 35.3058, "lon": 139.4968, "radius_km": 5}},
-            {"q": "新潟ゆかりの文化人・芸術家を一覧して", "tool": "search_culture", "args": {"keyword": "新潟"}},
+            {"q": "新潟ゆかりの文化人・芸術家を一覧して", "tool": "get_prefecture_profile", "args": {"prefecture": "niigata"}},
             {"q": "外国人に刺さる知られていない聖地を推薦して", "tool": "search_pilgrimage", "args": {"limit": 10}},
         ]
     },
@@ -67,11 +67,11 @@ PERSONAS = [
         "id": "P2", "name": "CCDM研究者",
         "context": "文化資本動態モデルを研究する経済学者",
         "questions": [
-            {"q": "1995年前後のアニメ聖地巡礼スポットの変化を教えて", "tool": "generate_timeline", "args": {"theme": "アニメ", "start_year": 1990, "end_year": 2000}},
+            {"q": "1995年前後のアニメ聖地巡礼スポットの変化を教えて", "tool": "pilgrimage_timeline", "args": {"year_from": 1990, "year_to": 2000}},
             {"q": "都道府県別の文化資源カテゴリ分布を確認したい", "tool": "get_prefecture_profile", "args": {"prefecture": "kyoto"}},
-            {"q": "ポップカルチャーと伝統文化財が共存するケースを列挙して", "tool": "compare_cultures", "args": {"entity_a": "鬼滅の刃", "entity_b": "金閣寺"}},
-            {"q": "聖地スポットが多い都道府県を教えて", "tool": "search_pilgrimage", "args": {"limit": 20}},
-            {"q": "release_year=2010前後のアニメ作品と聖地統計を出して", "tool": "filter_by_release_year", "args": {"year_from": 2008, "year_to": 2012, "entity_type": "anime"}},
+            {"q": "ポップカルチャーと伝統文化財が共存するケースを列挙して", "tool": "export_dataset", "args": {"dataset_type": "pop_trad", "limit": 30}},
+            {"q": "聖地スポットが多い都道府県を教えて", "tool": "bulk_region_profiles", "args": {"include_pilgrimage": True}},
+            {"q": "release_year=2010前後のアニメ作品と聖地統計を出して", "tool": "filter_by_release_year", "args": {"year_from": 2008, "year_to": 2012, "entity_type": "anime", "limit": 30}},
         ]
     },
     {
@@ -90,8 +90,8 @@ PERSONAS = [
         "context": "地方創生担当。自分の地域の文化資源を活用したコンテンツツーリズム施策を検討中",
         "questions": [
             {"q": "高知県の文化資源を種類別に整理して", "tool": "get_prefecture_profile", "args": {"prefecture": "kochi"}},
-            {"q": "鳥取県でアニメ・映画の撮影地になった場所は？", "tool": "search_culture", "args": {"keyword": "鳥取"}},
-            {"q": "島根県の伝統工芸と関連するポップカルチャー作品は？", "tool": "search_culture", "args": {"keyword": "島根"}},
+            {"q": "鳥取県でアニメ・映画の撮影地になった場所は？", "tool": "get_prefecture_profile", "args": {"prefecture": "tottori"}},
+            {"q": "島根県の伝統工芸と関連するポップカルチャー作品は？", "tool": "export_dataset", "args": {"dataset_type": "pop_trad", "prefecture": "島根", "limit": 30}},
             {"q": "四国4県の文化資源密度を比較して", "tool": "analyze_cultural_density", "args": {"lat_min": 32.8, "lat_max": 34.4, "lon_min": 132.0, "lon_max": 134.8}},
             {"q": "徳島県のコンテンツツーリズムのポテンシャルを評価して", "tool": "find_tourism_assets", "args": {"region": "shikoku"}},
         ]

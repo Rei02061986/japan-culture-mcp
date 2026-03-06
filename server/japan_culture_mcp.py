@@ -4297,9 +4297,10 @@ async def find_tourism_assets(
         lon_offset = radius_km / (111.0 * max(math.cos(math.radians(center_lat)), 0.01))
 
         # Define tourism-relevant categories
+        # Note: shrine/temple entity_types don't exist in DB — use label matching
         categories = {
-            "shrine": {"label": "神社", "types": ["shrine"]},
-            "temple": {"label": "寺院", "types": ["temple"]},
+            "shrine": {"label": "神社", "types": ["place"], "label_like": ["%神社%", "%大社%", "%八幡%"]},
+            "temple": {"label": "寺院", "types": ["place"], "label_like": ["%寺%", "%院%"]},
             "place": {"label": "名所・史跡", "types": ["place"]},
             "artifact": {"label": "文化財・美術品", "types": ["artifact"]},
             "building": {"label": "歴史的建造物", "types": ["building"]},
@@ -4331,6 +4332,23 @@ async def find_tourism_assets(
                     LIMIT ?
                 """, (center_lat - lat_offset, center_lat + lat_offset,
                       center_lon - lon_offset, center_lon + lon_offset, limit)).fetchall()
+            elif "label_like" in cat_info:
+                # Label-based matching for shrine/temple
+                like_conds = " OR ".join(["e.label_ja LIKE ?"] * len(cat_info["label_like"]))
+                type_ph = ",".join(["?"] * len(cat_info["types"]))
+                rows = db.execute(f"""
+                    SELECT e.id, e.label_ja, e.label_en, e.entity_type,
+                           e.lat, e.lon
+                    FROM entities e
+                    WHERE e.lat BETWEEN ? AND ? AND e.lon BETWEEN ? AND ?
+                      AND e.entity_type IN ({type_ph})
+                      AND ({like_conds})
+                      AND e.is_dormant = 0
+                    ORDER BY e.label_ja
+                    LIMIT ?
+                """, (center_lat - lat_offset, center_lat + lat_offset,
+                      center_lon - lon_offset, center_lon + lon_offset,
+                      *cat_info["types"], *cat_info["label_like"], limit)).fetchall()
             else:
                 type_placeholders = ",".join(["?"] * len(cat_info["types"]))
                 rows = db.execute(f"""
@@ -4581,18 +4599,36 @@ async def filter_by_release_year(
         db = _get_db()
         limit = max(1, min(limit, 100))
 
-        conditions = ["release_year IS NOT NULL", "is_dormant = 0"]
+        # Map user-friendly types to entity_tags medium values
+        _type_tag_map = {
+            "anime": ["anime", "anime_tv", "anime_movie", "anime_ova"],
+            "manga": ["manga"],
+            "game": ["game"],
+            "film": ["film"],
+            "music": ["music"],
+            "ukiyoe": ["ukiyoe"],
+        }
+
+        conditions = ["e.release_year IS NOT NULL", "e.is_dormant = 0"]
         params = []
+        use_tag_join = False
 
         if year_from is not None:
-            conditions.append("release_year >= ?")
+            conditions.append("e.release_year >= ?")
             params.append(year_from)
         if year_to is not None:
-            conditions.append("release_year <= ?")
+            conditions.append("e.release_year <= ?")
             params.append(year_to)
         if entity_type:
-            conditions.append("entity_type = ?")
-            params.append(entity_type)
+            tag_values = _type_tag_map.get(entity_type.lower())
+            if tag_values:
+                use_tag_join = True
+                tag_ph = ",".join(["?"] * len(tag_values))
+                conditions.append(f"t.axis = 'medium' AND t.value_code IN ({tag_ph})")
+                params.extend(tag_values)
+            else:
+                conditions.append("e.entity_type = ?")
+                params.append(entity_type)
 
         # If keyword specified, intersect with FTS5 results
         keyword_ids = None
@@ -4609,14 +4645,25 @@ async def filter_by_release_year(
                 }, ensure_ascii=False, indent=2)
 
         where = " AND ".join(conditions)
-        query = f"""
-            SELECT id, label_ja, label_en, entity_type, release_year,
-                   release_year_source, source, wikidata_id
-            FROM entities
-            WHERE {where}
-            ORDER BY release_year DESC
-            LIMIT ?
-        """
+        if use_tag_join:
+            query = f"""
+                SELECT e.id, e.label_ja, e.label_en, e.entity_type, e.release_year,
+                       e.release_year_source, e.source, e.wikidata_id
+                FROM entities e
+                JOIN entity_tags t ON e.id = t.entity_id
+                WHERE {where}
+                ORDER BY e.release_year DESC
+                LIMIT ?
+            """
+        else:
+            query = f"""
+                SELECT e.id, e.label_ja, e.label_en, e.entity_type, e.release_year,
+                       e.release_year_source, e.source, e.wikidata_id
+                FROM entities e
+                WHERE {where}
+                ORDER BY e.release_year DESC
+                LIMIT ?
+            """
         params.append(limit * 5 if keyword_ids else limit)
 
         rows = db.execute(query, params).fetchall()
@@ -5252,8 +5299,12 @@ async def export_dataset(
                 FROM connections c
                 JOIN entities a ON c.entity_a_id = a.id
                 JOIN entities b ON c.entity_b_id = b.id
-                WHERE c.connection_type IN ('pop_traditional', 'cross_type_label_match')
+                WHERE c.connection_type IN ('pop_traditional', 'cross_type_label_match',
+                      'cross_medium', 'pilgrimage_same_location', 'pilgrimage_landmark',
+                      'pilgrimage_narrative', 'pilgrimage_regional')
                   AND a.is_dormant = 0 AND b.is_dormant = 0
+                  AND ((a.entity_type = 'work' AND b.entity_type IN ('place','tradition','cultural_practice'))
+                    OR (b.entity_type = 'work' AND a.entity_type IN ('place','tradition','cultural_practice')))
                   {geo_filter}
                 LIMIT ?
             """, params + [limit]).fetchall()
