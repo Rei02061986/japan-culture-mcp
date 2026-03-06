@@ -49,8 +49,11 @@ RANK_PRIORITY = {
 }
 
 
-def fetch_batch(wikidata_ids: list) -> dict:
+def fetch_batch(wikidata_ids: list, retry: int = 0) -> dict:
     """Fetch heritage designations for a batch of Wikidata IDs."""
+    if retry > 3:
+        print("    Max retries exceeded, skipping batch")
+        return {}
     values = " ".join(f"wd:{qid}" for qid in wikidata_ids)
     query = f"""
     SELECT ?item ?designation ?inception WHERE {{
@@ -63,17 +66,21 @@ def fetch_batch(wikidata_ids: list) -> dict:
         r = requests.get(
             WIKIDATA_SPARQL,
             params={"query": query, "format": "json"},
-            headers={"Accept": "application/sparql-results+json"},
+            headers={
+                "Accept": "application/sparql-results+json",
+                "User-Agent": "JapanCultureMCP/1.3.0 (heritage enrichment; mailto:teddykmk@gmail.com)",
+            },
             timeout=60,
         )
-        if r.status_code == 429:
-            print("    Rate limited, waiting 60s...")
-            time.sleep(60)
-            return fetch_batch(wikidata_ids)
+        if r.status_code in (429, 403):
+            wait = 120 if r.status_code == 403 else 60
+            print(f"    Rate limited ({r.status_code}), waiting {wait}s... (retry {retry + 1})")
+            time.sleep(wait)
+            return fetch_batch(wikidata_ids, retry + 1)
         if r.status_code == 504:
-            print("    Timeout, retrying in 30s...")
+            print(f"    Timeout, retrying in 30s... (retry {retry + 1})")
             time.sleep(30)
-            return fetch_batch(wikidata_ids)
+            return fetch_batch(wikidata_ids, retry + 1)
         r.raise_for_status()
         data = r.json()
     except Exception as e:
