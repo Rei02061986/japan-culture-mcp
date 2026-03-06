@@ -35,6 +35,6 @@ ENV PORT=8008
 EXPOSE 8008
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
-    CMD curl -sf http://localhost:${PORT}/health || exit 1
+    CMD curl -sf -m 3 http://localhost:${PORT}/sse || exit 1
 
 ENTRYPOINT ["python", "-m", "server.japan_culture_mcp"]
