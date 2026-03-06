@@ -5283,4 +5283,7 @@ async def export_dataset(
 
 # ── Entry point ────────────────────────────────────────────
 if __name__ == "__main__":
-    mcp.run()
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+    if transport not in ("stdio", "sse", "streamable-http"):
+        transport = "stdio"
+    mcp.run(transport=transport)

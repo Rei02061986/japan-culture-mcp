@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 LABEL maintainer="Japan Culture MCP Team"
-LABEL description="Japan Culture MCP Server - 10M+ entities knowledge graph"
+LABEL description="Japan Culture MCP Server - 8.3M+ entities knowledge graph"
 
 # Prevent Python from writing .pyc files and enable unbuffered output
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -12,7 +12,7 @@ WORKDIR /app
 # Install system dependencies for SQLite FTS5 and R-Tree
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        libsqlite3-dev \
+        libsqlite3-dev curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
@@ -26,11 +26,14 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Create data directory for volume mount
 RUN mkdir -p /app/data
 
-# Default DB path (override via environment variable)
+# Default environment
 ENV DB_PATH=/app/data/culture_ontology.db
+ENV MCP_TRANSPORT=stdio
+ENV PORT=8008
 
-# Expose MCP stdio transport (no port needed for stdio)
-# For SSE transport, uncomment:
-# EXPOSE 8000
+EXPOSE 8008
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
+    CMD curl -sf http://localhost:${PORT}/health || exit 1
 
 ENTRYPOINT ["python", "-m", "server.japan_culture_mcp"]

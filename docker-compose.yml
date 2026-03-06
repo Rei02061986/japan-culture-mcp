@@ -1,22 +1,26 @@
-version: "3.8"
-
 services:
   japan-culture-mcp:
     build:
       context: .
       dockerfile: Dockerfile
+    image: japan-culture-mcp:1.3.0
     container_name: japan-culture-mcp
-    restart: unless-stopped
+    ports:
+      - "8008:8008"
     volumes:
       - ./data:/app/data:ro
     environment:
       - DB_PATH=/app/data/culture_ontology.db
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - MCP_TRANSPORT=sse
+      - PORT=8008
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
-    # For stdio transport (default MCP), use stdin_open and tty
-    stdin_open: true
-    tty: true
-    # Resource limits
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8008/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         limits:
