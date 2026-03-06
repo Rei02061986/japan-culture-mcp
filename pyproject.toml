@@ -34,5 +34,8 @@ maps = [
     "googlemaps>=4.0",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["server"]
+
 [project.scripts]
 japan-culture-mcp = "server.japan_culture_mcp:mcp.run"
