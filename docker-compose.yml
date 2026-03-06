@@ -17,7 +17,7 @@ services:
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-sf", "-m", "3", "http://localhost:8008/sse"]
+      test: ["CMD-SHELL", "curl -sf -o /dev/null -m 3 http://localhost:8008/sse; [ $? -eq 0 ] || [ $? -eq 28 ]"]
       interval: 30s
       timeout: 10s
       retries: 3
