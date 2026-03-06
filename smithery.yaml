@@ -1,0 +1,15 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      db_path:
+        type: string
+        description: "Path to culture_ontology.db SQLite database"
+    required: []
+  commandFunction:
+    - python3
+    - "-m"
+    - server.japan_culture_mcp
+  env:
+    DB_PATH: "{{config.db_path}}"

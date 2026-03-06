@@ -1,0 +1,161 @@
+{
+  "scenario": "京都・聖と俗ルート",
+  "description": "京都の文化財を「神社仏閣」テーマでルート生成",
+  "results": [
+    {
+      "tool": "cultural_route",
+      "params": {
+        "theme": "shrine_temple",
+        "region": "kinki"
+      },
+      "result": {
+        "theme": "shrine_temple",
+        "region": "kinki",
+        "spots": [
+          {
+            "name": "平等院",
+            "lat": 34.889444444,
+            "lon": 135.807777777,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28745/12991.png"
+          },
+          {
+            "name": "伊勢神宮",
+            "lat": 34.455,
+            "lon": 136.725833333,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28829/13039.png"
+          },
+          {
+            "name": "八坂神社",
+            "lat": 35.003645,
+            "lon": 135.778529,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28742/12978.png"
+          },
+          {
+            "name": "萬福寺",
+            "lat": 34.913888888,
+            "lon": 135.8075,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28745/12988.png"
+          },
+          {
+            "name": "不退寺",
+            "lat": 34.69472514,
+            "lon": 135.8124751,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28745/13013.png"
+          },
+          {
+            "name": "宇治上神社",
+            "lat": 34.892091,
+            "lon": 135.811456,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28745/12991.png"
+          },
+          {
+            "name": "賀茂別雷神社",
+            "lat": 35.060507,
+            "lon": 135.752752,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28740/12972.png"
+          },
+          {
+            "name": "龍安寺",
+            "lat": 35.034444444,
+            "lon": 135.718333333,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28737/12975.png"
+          },
+          {
+            "name": "本能寺",
+            "lat": 35.010294,
+            "lon": 135.768281,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28741/12978.png"
+          },
+          {
+            "name": "大安寺",
+            "lat": 34.668,
+            "lon": 135.812722,
+            "map_tile": "https://cyberjapandata.gsi.go.jp/xyz/std/15/28745/13016.png"
+          }
+        ],
+        "total": 10
+      }
+    },
+    {
+      "tool": "find_serendipity",
+      "params": {
+        "keyword": "金閣寺"
+      },
+      "result": {
+        "query": "金閣寺",
+        "matched_entity": {
+          "label_ja": "三島由紀夫『金閣寺』",
+          "entity_type": "work"
+        },
+        "tags": {
+          "theme": [
+            "sacred_profane"
+          ],
+          "medium": [
+            "architecture"
+          ],
+          "experience": [
+            "aesthetic"
+          ]
+        },
+        "connections_found": 9,
+        "results": [
+          {
+            "connected_entity": "鹿苑寺",
+            "connection_type": "medium_cross",
+            "serendipity_score": 0.75,
+            "explanation": "三島由紀夫の小説『金閣寺』は、鹿苑寺を舞台にした作品であり、寺院の美と破壊をテーマにしている。"
+          },
+          {
+            "connected_entity": "大阪城公園",
+            "connection_type": "thematic_resonance",
+            "serendipity_score": 0.72,
+            "explanation": "どちらも美しい庭園と歴史的な建築を有し、文化的な重要性が高い。"
+          },
+          {
+            "connected_entity": "尼寺と絵巻--真盛上人伝の一型",
+            "connection_type": "era_bridge",
+            "serendipity_score": 0.7,
+            "explanation": "三島由紀夫の金閣寺は日本文化における重要な作品であり、関連性がある。"
+          },
+          {
+            "connected_entity": "先生は仏頂面してやってくる",
+            "connection_type": "medium_cross",
+            "serendipity_score": 0.65,
+            "explanation": "文学作品が仏教と深く結びついている。"
+          },
+          {
+            "connected_entity": "仏像パンク",
+            "connection_type": "medium_cross",
+            "serendipity_score": 0.65,
+            "explanation": "三島由紀夫の作品は日本文化に深く根ざしており、興味深い接続。"
+          },
+          {
+            "connected_entity": "アニメ『京騒戯画』",
+            "connection_type": "shared_motif",
+            "serendipity_score": 0.58,
+            "explanation": "美と崩壊、破壊のテーマが共通しており、視覚的な美しさとその背後にある危うさが繋がる。"
+          },
+          {
+            "connected_entity": "禅宗の哲学",
+            "connection_type": "influence",
+            "serendipity_score": 0.56,
+            "explanation": "三島由紀夫の作品には、禅の影響が見られ、美への執着とその消失が描かれている。"
+          },
+          {
+            "connected_entity": "アニメ映画『かぐや姫の物語』",
+            "connection_type": "shared_motif",
+            "serendipity_score": 0.56,
+            "explanation": "両者は美とその喪失についての深い考察を持っており、視覚的な表現にも共通点が見られる。"
+          },
+          {
+            "connected_entity": "京都府の庭園文化",
+            "connection_type": "thematic_resonance",
+            "serendipity_score": 0.5,
+            "explanation": "庭園の美しさとそれに伴う儚さが『金閣寺』のテーマと重なり合う。"
+          }
+        ]
+      }
+    }
+  ]
+}

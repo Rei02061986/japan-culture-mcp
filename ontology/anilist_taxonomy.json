@@ -1,0 +1,214 @@
+{
+  "version": "0.1.0",
+  "generated": "2026-02-28",
+  "genres": [
+    "Action", "Adventure", "Comedy", "Drama", "Ecchi", "Fantasy",
+    "Hentai", "Horror", "Mahou Shoujo", "Mecha", "Music", "Mystery",
+    "Psychological", "Romance", "Sci-Fi", "Slice of Life", "Sports",
+    "Supernatural", "Thriller"
+  ],
+  "total_tags": 417,
+  "total_categories": 25,
+  "tag_categories": {
+    "Technical": {
+      "tags": ["4-koma", "Achromatic", "Advertisement", "Anthology", "CGI", "Episodic", "Flash", "Full CGI", "Full Color", "Long Strip", "Mixed Media", "No Dialogue", "Non-fiction", "POV", "Puppetry", "Rotoscoping", "Stop Motion", "Vertical Video"],
+      "ontology_axis": "媒体",
+      "notes": "制作技法・フォーマットに関するタグ。作品の視覚的・構造的形式を示す"
+    },
+    "Setting-Time": {
+      "tags": ["Achronological Order", "Anachronism", "Ancient China", "Dystopian", "Historical", "Medieval", "Time Skip"],
+      "ontology_axis": "時代",
+      "notes": "時代設定に関するタグ。直接的な時代軸マッピングが可能"
+    },
+    "Theme-Game-Sport": {
+      "tags": ["Acrobatics", "Airsoft", "American Football", "Athletics", "Badminton", "Baseball", "Basketball", "Bowling", "Boxing", "Cheerleading", "Cycling", "Fencing", "Fishing", "Fitness", "Football", "Golf", "Handball", "Ice Skating", "Judo", "Lacrosse", "Parkour", "Rugby", "Scuba Diving", "Skateboarding", "Sumo", "Surfing", "Swimming", "Table Tennis", "Tennis", "Volleyball", "Wrestling"],
+      "ontology_axis": "テーマ/体験",
+      "notes": "スポーツ・競技テーマ。テーマ軸（競技文化）と体験軸（身体的体験）の両方に関連"
+    },
+    "Theme-Arts": {
+      "tags": ["Acting", "Ballet", "Calligraphy", "Classic Literature", "Drawing", "Fashion", "Food", "Kabuki", "Makeup", "Manzai", "Modeling", "Photography", "Rakugo", "Writing"],
+      "ontology_axis": "テーマ/体験",
+      "notes": "芸術・文化活動テーマ。歌舞伎・落語・書道は日本文化の体験モードにも直結"
+    },
+    "Theme-Other": {
+      "tags": ["Adoption", "Animals", "Astronomy", "Autobiographical", "Biographical", "Blackmail", "Body Horror", "Body Image", "Cannibalism", "Chibi", "Cosmic Horror", "Creature Taming", "Crime", "Crossover", "Death Game", "Denpa", "Drugs", "Economics", "Educational", "Environmental", "Ero Guro", "Filmmaking", "Found Family", "Gambling", "Gender Bending", "Gore", "Indigenous Cultures", "Language Barrier", "LGBTQ+ Themes", "Lost Civilization", "Marriage", "Medicine", "Memory Manipulation", "Meta", "Mountaineering", "Noir", "Otaku Culture", "Pandemic", "Philosophy", "Politics", "Pregnancy", "Proxy Battle", "Psychosexual", "Reincarnation", "Religion", "Rescue", "Royal Affairs", "Slavery", "Software Development", "Survival", "Terrorism", "Torture", "Travel", "Vocal Synth", "War"],
+      "ontology_axis": "テーマ",
+      "notes": "多様なテーマタグ。death_rebirth, war_conflict, journey_boundary等の大テーマに分類可能"
+    },
+    "Setting-Universe": {
+      "tags": ["Afterlife", "Alternate Universe", "Augmented Reality", "Omegaverse", "Post-Apocalyptic", "Space", "Urban Fantasy", "Virtual World"],
+      "ontology_axis": "テーマ",
+      "notes": "世界設定。otherworld（異界）テーマとして分類"
+    },
+    "Theme-Romance": {
+      "tags": ["Age Gap", "Boys' Love", "Cohabitation", "Female Harem", "Heterosexual", "Love Triangle", "Male Harem", "Matchmaking", "Mixed Gender Harem", "Polyamorous", "Teens' Love", "Unrequited Love", "Yuri"],
+      "ontology_axis": "テーマ",
+      "notes": "恋愛テーマ。love_bond（愛と絆）大テーマに分類"
+    },
+    "Cast-Traits": {
+      "tags": ["Age Regression", "Agender", "Aliens", "Amnesia", "Angels", "Anthropomorphism", "Aromantic", "Arranged Marriage", "Artificial Intelligence", "Asexual", "Bisexual", "Butler", "Centaur", "Chimera", "Chuunibyou", "Clone", "Cosplay", "Cowboys", "Crossdressing", "Cyborg", "Delinquents", "Demons", "Detective", "Dinosaurs", "Disability", "Dissociative Identities", "Dragons", "Dullahan", "Elf", "Fairy", "Femboy", "Ghost", "Goblin", "Gods", "Gyaru", "Hikikomori", "Homeless", "Idol", "Kemonomimi", "Kuudere", "Maids", "Mermaid", "Monster Boy", "Monster Girl", "Nekomimi", "Ninja", "Nudity", "Nun", "Office Lady", "Oiran", "Ojou-sama", "Orphan", "Pirates", "Robots", "Samurai", "Shrine Maiden", "Skeleton", "Succubus", "Tanned Skin", "Teacher", "Tomboy", "Transgender", "Tsundere", "Twins", "Vampire", "Veterinarian", "Vikings", "Villainess", "VTuber", "Werewolf", "Witch", "Yandere", "Zombie"],
+      "ontology_axis": "テーマ",
+      "notes": "キャラクター特性。supernatural（超自然）やidentity_self（アイデンティティ）等の大テーマに分類。忍者・侍・巫女は日本文化固有"
+    },
+    "Theme-Slice of Life": {
+      "tags": ["Agriculture", "Cute Boys Doing Cute Things", "Cute Girls Doing Cute Things", "Family Life", "Horticulture", "Iyashikei", "Parenthood"],
+      "ontology_axis": "テーマ/体験",
+      "notes": "日常系テーマ。everyday_beauty（日常の美）とreflective（内省）体験モードに関連。癒し系は日本文化の美学"
+    },
+    "Sexual Content": {
+      "tags": ["Ahegao", "Amputation", "Anal Sex", "Armpits", "Ashikoki", "Asphyxiation", "Bondage", "Boobjob", "Cervix Penetration", "Cheating", "Cumflation", "Cunnilingus", "Deepthroat", "Defloration", "DILF", "Double Penetration", "Erotic Piercings", "Exhibitionism", "Facial", "Feet", "Fellatio", "Femdom", "Fingering", "Fisting", "Flat Chest", "Futanari", "Group Sex", "Hair Pulling", "Handjob", "Human Pet", "Hypersexuality", "Incest", "Inseki", "Irrumatio", "Lactation", "Large Breasts", "Male Pregnancy", "Masochism", "Masturbation", "Mating Press", "MILF", "Nakadashi", "Netorare", "Netorase", "Netori", "Oyakodon", "Pet Play", "Prostitution", "Public Sex", "Rape", "Rimjob", "Sadism", "Scat", "Scissoring", "Sex Toys", "Shimaidon", "Squirting", "Sumata", "Swapping ", "Sweat", "Tentacles", "Threesome", "Virginity", "Vore", "Voyeur", "Watersports", "Zoophilia"],
+      "ontology_axis": "メタ（軸外）",
+      "notes": "成人向けコンテンツ分類。5軸の対象外。isAdult=trueフィルタに使用"
+    },
+    "Theme-Fantasy": {
+      "tags": ["Alchemy", "Body Swapping", "Cultivation", "Curses", "Exorcism", "Fairy Tale", "Henshin", "Isekai", "Kaiju", "Magic", "Mythology", "Necromancy", "Reverse Isekai", "Shapeshifting", "Steampunk", "Super Power", "Superhero", "Wuxia", "Youkai"],
+      "ontology_axis": "テーマ",
+      "notes": "ファンタジーテーマ。supernatural, otherworld, transformation等の大テーマに分類。妖怪・変身・異世界は日本文化の核心的モチーフ"
+    },
+    "Cast-Main Cast": {
+      "tags": ["Anti-Hero", "Elderly Protagonist", "Ensemble Cast", "Estranged Family", "Female Protagonist", "Male Protagonist", "Primarily Adult Cast", "Primarily Animal Cast", "Primarily Child Cast", "Primarily Female Cast", "Primarily Male Cast", "Primarily Teen Cast"],
+      "ontology_axis": "メタ（軸外）",
+      "notes": "キャスト構成メタ情報。5軸の分類対象外"
+    },
+    "Theme-Action": {
+      "tags": ["Archery", "Battle Royale", "Espionage", "Fugitive", "Guns", "Martial Arts", "Spearplay", "Swordplay"],
+      "ontology_axis": "テーマ",
+      "notes": "アクションテーマ。war_conflict, power_rebellion等の大テーマに分類。剣術・武術は日本文化固有"
+    },
+    "Theme-Other-Organisations": {
+      "tags": ["Assassins", "Criminal Organization", "Cult", "Firefighters", "Gangs", "Mafia", "Military", "Police", "Triads", "Yakuza"],
+      "ontology_axis": "テーマ",
+      "notes": "組織テーマ。power_rebellion, community_tradition等に分類。ヤクザは日本文化固有のモチーフ"
+    },
+    "Theme-Other-Vehicle": {
+      "tags": ["Aviation", "Cars", "Mopeds", "Motorcycles", "Ships", "Tanks", "Trains"],
+      "ontology_axis": "テーマ",
+      "notes": "乗り物テーマ。journey_boundary（旅と境界）に関連"
+    },
+    "Theme-Arts-Music": {
+      "tags": ["Band", "Classical Music", "Dancing", "Hip-hop Music", "Jazz Music", "Metal Music", "Musical Theater", "Rock Music"],
+      "ontology_axis": "テーマ/体験",
+      "notes": "音楽テーマ。craft_mastery（技と極み）とaesthetic（美的鑑賞）体験モードに関連"
+    },
+    "Setting-Scene": {
+      "tags": ["Bar", "Boarding School", "Camping", "Circus", "Coastal", "College", "Desert", "Dungeon", "Foreign", "Inn", "Konbini", "Natural Disaster", "Office", "Outdoor Activities", "Prison", "Restaurant", "Rural", "School", "School Club", "Snowscape", "Urban", "Wilderness", "Work"],
+      "ontology_axis": "地理/体験",
+      "notes": "場面設定。地理軸（都市/農村/海岸等）と体験モード（冒険/日常等）の両方に関連。コンビニは日本固有"
+    },
+    "Theme-Game": {
+      "tags": ["Board Game", "E-Sports", "Video Games"],
+      "ontology_axis": "テーマ",
+      "notes": "ゲームテーマ。媒体軸（ゲーム）とも関連するが、ここではテーマとして分類"
+    },
+    "Theme-Drama": {
+      "tags": ["Bullying", "Class Struggle", "Coming of Age", "Conspiracy", "Eco-Horror", "Fake Relationship", "Kingdom Management", "Rehabilitation", "Revenge", "Suicide", "Tragedy"],
+      "ontology_axis": "テーマ",
+      "notes": "ドラマテーマ。identity_self, power_rebellion, death_rebirth等の大テーマに分類"
+    },
+    "Theme-Game-Card & Board Game": {
+      "tags": ["Card Battle", "Go", "Karuta", "Mahjong", "Poker", "Shogi"],
+      "ontology_axis": "テーマ",
+      "notes": "ボードゲーム・カードゲーム。囲碁・将棋・百人一首は日本文化固有。craft_mastery（技と極み）に関連"
+    },
+    "Theme-Sci-Fi": {
+      "tags": ["Cyberpunk", "Space Opera", "Time Loop", "Time Manipulation", "Tokusatsu"],
+      "ontology_axis": "テーマ",
+      "notes": "SF/テーマ。特撮は日本文化固有の媒体/テーマ"
+    },
+    "Demographic": {
+      "tags": ["Josei", "Kids", "Seinen", "Shoujo", "Shounen"],
+      "ontology_axis": "メタ（軸外）",
+      "notes": "ターゲット層分類。日本の出版文化固有の概念（少年/少女/青年/女性向け）"
+    },
+    "Setting": {
+      "tags": ["Matriarchy"],
+      "ontology_axis": "テーマ",
+      "notes": "社会設定"
+    },
+    "Theme-Comedy": {
+      "tags": ["Parody", "Satire", "Slapstick", "Surreal Comedy"],
+      "ontology_axis": "テーマ",
+      "notes": "コメディテーマ。humor_satire（笑いと風刺）大テーマに分類"
+    },
+    "Theme-Sci-Fi-Mecha": {
+      "tags": ["Real Robot", "Super Robot"],
+      "ontology_axis": "テーマ",
+      "notes": "メカ/ロボットテーマ。日本アニメ文化の代表的サブジャンル"
+    }
+  },
+  "category_to_axis_mapping": {
+    "Technical": "媒体",
+    "Setting-Time": "時代",
+    "Theme-Game-Sport": "テーマ/体験",
+    "Theme-Arts": "テーマ/体験",
+    "Theme-Other": "テーマ",
+    "Setting-Universe": "テーマ",
+    "Theme-Romance": "テーマ",
+    "Cast-Traits": "テーマ",
+    "Theme-Slice of Life": "テーマ/体験",
+    "Sexual Content": "メタ（軸外）",
+    "Theme-Fantasy": "テーマ",
+    "Cast-Main Cast": "メタ（軸外）",
+    "Theme-Action": "テーマ",
+    "Theme-Other-Organisations": "テーマ",
+    "Theme-Other-Vehicle": "テーマ",
+    "Theme-Arts-Music": "テーマ/体験",
+    "Setting-Scene": "地理/体験",
+    "Theme-Game": "テーマ",
+    "Theme-Drama": "テーマ",
+    "Theme-Game-Card & Board Game": "テーマ",
+    "Theme-Sci-Fi": "テーマ",
+    "Demographic": "メタ（軸外）",
+    "Setting": "テーマ",
+    "Theme-Comedy": "テーマ",
+    "Theme-Sci-Fi-Mecha": "テーマ"
+  },
+  "axis_summary": {
+    "テーマ": {
+      "category_count": 16,
+      "tag_count": 282,
+      "description": "作品の主題・モチーフ。最も多くのタグが分類される中心軸"
+    },
+    "テーマ/体験": {
+      "category_count": 5,
+      "tag_count": 74,
+      "description": "テーマと体験モードの両方に関連するタグ群"
+    },
+    "時代": {
+      "category_count": 1,
+      "tag_count": 7,
+      "description": "時代設定。AniListでは限定的（Historical, Medieval等のみ）"
+    },
+    "媒体": {
+      "category_count": 1,
+      "tag_count": 18,
+      "description": "制作技法・形式。AniListではformat（TV, MOVIE, MANGA等）が主たる媒体分類"
+    },
+    "地理/体験": {
+      "category_count": 1,
+      "tag_count": 23,
+      "description": "場面設定。地理と体験の両面を持つ"
+    },
+    "メタ（軸外）": {
+      "category_count": 3,
+      "tag_count": 84,
+      "description": "5軸に直接マッピングされないメタ情報（ターゲット層、成人向け、キャスト構成）"
+    }
+  },
+  "japan_culture_specific_tags": {
+    "description": "AniListタグ中、日本文化に特に関連の深いタグ",
+    "tags": {
+      "Theme-Fantasy": ["Youkai", "Isekai", "Henshin", "Kaiju", "Exorcism"],
+      "Theme-Arts": ["Kabuki", "Calligraphy", "Manzai", "Rakugo"],
+      "Cast-Traits": ["Ninja", "Samurai", "Shrine Maiden", "Oiran", "Gyaru", "Chuunibyou", "Hikikomori"],
+      "Theme-Game-Sport": ["Sumo", "Judo"],
+      "Theme-Game-Card & Board Game": ["Go", "Karuta", "Mahjong", "Shogi"],
+      "Theme-Sci-Fi": ["Tokusatsu"],
+      "Theme-Slice of Life": ["Iyashikei"],
+      "Demographic": ["Josei", "Seinen", "Shoujo", "Shounen"],
+      "Setting-Scene": ["Konbini"],
+      "Theme-Other-Organisations": ["Yakuza"],
+      "Theme-Sci-Fi-Mecha": ["Real Robot", "Super Robot"]
+    }
+  }
+}

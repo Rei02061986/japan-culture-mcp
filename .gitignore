@@ -1,0 +1,56 @@
+# === Database files (too large / local only) ===
+*.db
+*.db-wal
+*.db-shm
+
+# === Data files (API responses, too large for git) ===
+data/
+
+# === API response cache ===
+responses/
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# === Secrets ===
+.env
+.env.*
+secrets.json
+*_secret*
+*_key*.txt
+
+# === Logs ===
+*.log
+logs/
+*.jsonl
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Editor ===
+.vscode/
+.idea/
+*.swp
+
+# === Test cache ===
+.pytest_cache/
+
+# === Temp ===
+/tmp/
+
+# === Claude config (local only) ===
+.claude/
+
+# === Word doc output (auto-generated) ===
+docs/*.docx

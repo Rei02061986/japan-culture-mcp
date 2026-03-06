@@ -1,0 +1,167 @@
+{
+  "scenario": "妖怪セレンディピティ",
+  "description": "「妖怪」で検索し、古典から現代までの妖怪文化の繋がりを発見",
+  "results": [
+    {
+      "tool": "find_serendipity",
+      "params": {
+        "keyword": "妖怪"
+      },
+      "result": {
+        "query": "妖怪",
+        "matched_entity": {
+          "label_ja": "妖怪ウォッチ",
+          "entity_type": "work"
+        },
+        "tags": {
+          "theme": [
+            "yokai",
+            "humor_satire",
+            "supernatural",
+            "yokai",
+            "war_conflict",
+            "supernatural",
+            "yokai"
+          ],
+          "experience": [
+            "aesthetic"
+          ],
+          "medium": [
+            "anime_tv",
+            "manga"
+          ],
+          "era": [
+            "heisei"
+          ]
+        },
+        "connections_found": 5,
+        "results": [
+          {
+            "connected_entity": "百鬼夜行絵巻",
+            "connection_type": "influence",
+            "serendipity_score": 0.71,
+            "explanation": "百鬼夜行絵巻に描かれる妖怪たちが、妖怪ウォッチのキャラクターやストーリーに影響を与え、現代における妖怪文化を反映している。"
+          },
+          {
+            "connected_entity": "ゲゲゲの鬼太郎",
+            "connection_type": "shared_motif",
+            "serendipity_score": 0.7,
+            "explanation": "両作品には、妖怪との交流や冒険がテーマとして共通しており、子供たちに妖怪文化を紹介する役割を果たしている。"
+          },
+          {
+            "connected_entity": "ゲゲゲの鬼太郎",
+            "connection_type": "influence",
+            "serendipity_score": 0.7,
+            "explanation": "『ゲゲゲの鬼太郎』の妖怪文化の影響が『妖怪ウォッチ』に見られる。"
+          },
+          {
+            "connected_entity": "ゲゲゲの鬼太郎",
+            "connection_type": "adaptation",
+            "serendipity_score": 0.69,
+            "explanation": "現代の子供向けに妖怪をテーマにした作品であり、鬼太郎の影響を受けつつ新たなアプローチを行っている。"
+          },
+          {
+            "connected_entity": "高尾山",
+            "connection_type": "shared_motif",
+            "serendipity_score": 0.6,
+            "explanation": "高尾山には妖怪伝説があり、妖怪ウォッチの中でも類似した妖怪のモチーフが登場する。"
+          }
+        ]
+      }
+    },
+    {
+      "tool": "explore_axis",
+      "params": {
+        "axis": "theme",
+        "value": "yokai"
+      },
+      "result": {
+        "axis": "theme",
+        "value": "yokai",
+        "total_entities": 3006,
+        "sample": [
+          {
+            "label_ja": "ゲゲゲの鬼太郎",
+            "entity_type": "work"
+          },
+          {
+            "label_ja": "ゲゲゲの鬼太郎",
+            "entity_type": "unknown"
+          },
+          {
+            "label_ja": "妖怪ウォッチ",
+            "entity_type": "work"
+          },
+          {
+            "label_ja": "百鬼夜行絵巻",
+            "entity_type": "work"
+          },
+          {
+            "label_ja": "妖怪大戦争",
+            "entity_type": "work"
+          },
+          {
+            "label_ja": "幽霊画",
+            "entity_type": "art"
+          },
+          {
+            "label_ja": "闇の帝王 吸血鬼ドラキュラ",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "恐怖伝説 怪奇!フランケンシュタイン",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "鬼神伝",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "吸血鬼ハンターD ブラッドラスト",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "吸血鬼ハンターD",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "映画 妖怪ウォッチ 誕生の秘密だニャン!",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "映画 妖怪ウォッチ エンマ大王と5つの物語だニャン!",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "劇場版 鬼滅の刃 無限列車編",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "劇場版「薄桜鬼」 〜京都乱舞〜",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "劇場版「薄桜鬼」第二章 士魂蒼宮",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "映画 妖怪ウォッチ♪ ケータとオレっちの出会い編だニャン♪ワ、ワタクシも〜♪♪",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "「鬼滅の刃」上弦集結、そして刀鍛冶の里へ",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "鬼太郎誕生 ゲゲゲの謎",
+            "entity_type": "place"
+          },
+          {
+            "label_ja": "「鬼滅の刃」絆の奇跡、そして柱稽古へ",
+            "entity_type": "place"
+          }
+        ]
+      }
+    }
+  ]
+}

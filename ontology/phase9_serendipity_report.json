@@ -1,0 +1,773 @@
+{
+  "serendipity_scenarios": [
+    {
+      "name": "北斎から現代アートへ",
+      "query": "北斎",
+      "score": 4.5,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 85,
+        "connection_types": [
+          "shared_motif",
+          "medium_cross",
+          "thematic_resonance",
+          "creator_work",
+          "geographic_cultural",
+          "influence",
+          "adaptation"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "cultural_movement"
+        ],
+        "themes_found": [
+          "yokai",
+          "everyday_beauty",
+          "literary_arts",
+          "death_rebirth",
+          "sacred_profane",
+          "iki",
+          "magic",
+          "mythology",
+          "visual_arts",
+          "identity_self"
+        ],
+        "avg_serendipity": 0.62,
+        "explanation_quality": 0.95
+      },
+      "top_connections": [
+        {
+          "label": "郷伍郎",
+          "type": "medium_cross",
+          "serendipity": 0.89,
+          "explanation": "音楽と視覚芸術: 郷伍郎と葛飾北斎は感覚の交差で繋がる"
+        },
+        {
+          "label": "蟲師",
+          "type": "thematic_resonance",
+          "serendipity": 0.8500000000000001,
+          "explanation": "北斎の浮世絵に見られる自然観が、現代アニメ『蟲師』で再解釈されている。両者ともに自然と人の関係性を神秘的に描写している。"
+        },
+        {
+          "label": "村上隆",
+          "type": "thematic_resonance",
+          "serendipity": 0.8,
+          "explanation": "村上隆は北斎のポップカルチャー的要素を現代アートに取り入れた。"
+        },
+        {
+          "label": "ジャポニスム",
+          "type": "influence",
+          "serendipity": 0.8,
+          "explanation": "北斎の作品は19世紀ヨーロッパのジャポニスム運動に大きな影響を与え、印象派画家たちに新たな視覚表現をもたらした。"
+        },
+        {
+          "label": "千と千尋の神隠し",
+          "type": "thematic_resonance",
+          "serendipity": 0.75,
+          "explanation": "自然と人間の共生や妖怪の存在を描くというテーマで、北斎の浮世絵と宮崎駿の映画『千と千尋の神隠し』は共鳴している。"
+        }
+      ]
+    },
+    {
+      "name": "妖怪とポップカルチャー",
+      "query": "妖怪",
+      "score": 4.3,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 102,
+        "connection_types": [
+          "cultural_echo",
+          "same_theme"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "place"
+        ],
+        "themes_found": [
+          "journey_boundary",
+          "power_rebellion",
+          "magic",
+          "otherworld",
+          "war_conflict",
+          "nature_communion",
+          "supernatural",
+          "yokai",
+          "humor_satire",
+          "samurai"
+        ],
+        "avg_serendipity": 0.6,
+        "explanation_quality": 1.0
+      },
+      "top_connections": [
+        {
+          "label": "鬼の二匹",
+          "type": "cultural_echo",
+          "serendipity": 0.78,
+          "explanation": "文化的共鳴: 妖怪学と鬼の二匹はyokaiの世界で繋がる"
+        },
+        {
+          "label": "怨霊狩り",
+          "type": "cultural_echo",
+          "serendipity": 0.78,
+          "explanation": "文化的共鳴: 妖怪学と怨霊狩りはyokaiの世界で繋がる"
+        },
+        {
+          "label": "ゲゲゲの鬼太郎 スポーツ狂時代",
+          "type": "cultural_echo",
+          "serendipity": 0.78,
+          "explanation": "文化的共鳴: 妖怪学とゲゲゲの鬼太郎 スポーツ狂時代はyokaiの世界で繋がる"
+        },
+        {
+          "label": "真・女神転生IV FINAL",
+          "type": "cultural_echo",
+          "serendipity": 0.78,
+          "explanation": "文化的共鳴: 妖怪記と真・女神転生IV FINALはgame_cultureの世界で繋がる"
+        },
+        {
+          "label": "安倍晋三が語る\"昭和の妖怪\"のDNA--改憲、対北強硬策を主張するプリンスの政治的原風景とは",
+          "type": "cultural_echo",
+          "serendipity": 0.76,
+          "explanation": "文化的共鳴: 妖怪伝と安倍晋三が語る\"昭和の妖怪\"のDNA--改憲、対北強硬策を主張するプリンスの政治的原風景とははyokaiの世界で繋がる"
+        }
+      ]
+    },
+    {
+      "name": "侍の精神",
+      "query": "武士道",
+      "score": 3.8,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 24,
+        "connection_types": [
+          "shared_motif",
+          "medium_cross",
+          "era_bridge",
+          "thematic_resonance",
+          "creator_work",
+          "geographic_cultural",
+          "influence"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "place"
+        ],
+        "themes_found": [
+          "shrine_temple",
+          "war_conflict",
+          "yokai",
+          "visual_arts",
+          "nature_communion",
+          "samurai",
+          "literary_arts",
+          "death_rebirth",
+          "identity_self",
+          "swordplay"
+        ],
+        "avg_serendipity": 0.64,
+        "explanation_quality": 0.21
+      },
+      "top_connections": [
+        {
+          "label": "長板中形型紙 茶屋辻",
+          "type": "thematic_resonance",
+          "serendipity": 0.84,
+          "explanation": "武士と茶: 武士道無惨と長板中形型紙 茶屋辻は一期一会の精神で結ばれる"
+        },
+        {
+          "label": "茶の湯　踊",
+          "type": "thematic_resonance",
+          "serendipity": 0.78,
+          "explanation": "武士と茶: 武士道無惨と茶の湯　踊は一期一会の精神で結ばれる"
+        },
+        {
+          "label": "京都霊山護国神社",
+          "type": "thematic_resonance",
+          "serendipity": 0.74,
+          "explanation": ""
+        },
+        {
+          "label": "柞原八幡宮",
+          "type": "influence",
+          "serendipity": 0.73,
+          "explanation": ""
+        },
+        {
+          "label": "石刀神社",
+          "type": "era_bridge",
+          "serendipity": 0.7,
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "name": "茶の湯の美学",
+      "query": "茶道",
+      "score": 3.9,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 13,
+        "connection_types": [
+          "shared_motif",
+          "medium_cross",
+          "thematic_resonance",
+          "influence",
+          "adaptation"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "place"
+        ],
+        "themes_found": [
+          "crime",
+          "shrine_temple",
+          "family_life",
+          "magic",
+          "seasonal_beauty",
+          "sacred_profane",
+          "visual_arts",
+          "supernatural",
+          "war_conflict",
+          "humor_satire"
+        ],
+        "avg_serendipity": 0.68,
+        "explanation_quality": 0.23
+      },
+      "top_connections": [
+        {
+          "label": "松江城",
+          "type": "adaptation",
+          "serendipity": 0.7900000000000001,
+          "explanation": ""
+        },
+        {
+          "label": "十牛図",
+          "type": "shared_motif",
+          "serendipity": 0.75,
+          "explanation": "十牛図の悟りのプロセスは禅茶道の精神性と共鳴する。"
+        },
+        {
+          "label": "鈴木俊隆",
+          "type": "thematic_resonance",
+          "serendipity": 0.75,
+          "explanation": "鈴木俊隆の禅の教えは、禅茶道の精神性を現代に繋げる。"
+        },
+        {
+          "label": "紅葉狩",
+          "type": "medium_cross",
+          "serendipity": 0.7300000000000001,
+          "explanation": ""
+        },
+        {
+          "label": "長谷川等伯",
+          "type": "influence",
+          "serendipity": 0.72,
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "name": "京都の文化圏",
+      "query": "京都",
+      "score": 4.2,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 185,
+        "connection_types": [
+          "heritage_location",
+          "era_bridge",
+          "geographic_cultural",
+          "medium_cross"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "place"
+        ],
+        "themes_found": [
+          "shrine_temple",
+          "visual_arts",
+          "sacred_profane",
+          "architecture",
+          "love_bond",
+          "literary_arts",
+          "iki",
+          "nihonga_craft",
+          "craft_mastery",
+          "ukiyoe_craft"
+        ],
+        "avg_serendipity": 0.5,
+        "explanation_quality": 0.97
+      },
+      "top_connections": [
+        {
+          "label": "奈良県",
+          "type": "era_bridge",
+          "serendipity": 0.68,
+          "explanation": ""
+        },
+        {
+          "label": "長谷川等伯",
+          "type": "geographic_cultural",
+          "serendipity": 0.66,
+          "explanation": ""
+        },
+        {
+          "label": "今村紫紅",
+          "type": "era_bridge",
+          "serendipity": 0.64,
+          "explanation": ""
+        },
+        {
+          "label": "晴明神社",
+          "type": "geographic_cultural",
+          "serendipity": 0.63,
+          "explanation": ""
+        },
+        {
+          "label": "ウィーン愛と出逢って",
+          "type": "medium_cross",
+          "serendipity": 0.62,
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "name": "俳句と自然",
+      "query": "俳句",
+      "score": 4.1,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 21,
+        "connection_types": [
+          "era_bridge",
+          "shared_genre",
+          "thematic_resonance",
+          "same_theme",
+          "influence",
+          "adaptation"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "place"
+        ],
+        "themes_found": [
+          "calligraphy",
+          "performing_arts",
+          "manga_craft",
+          "shrine_temple",
+          "seasonal_beauty",
+          "yokai",
+          "visual_arts",
+          "nature_communion",
+          "literary_spirit",
+          "literary_arts"
+        ],
+        "avg_serendipity": 0.58,
+        "explanation_quality": 0.48
+      },
+      "top_connections": [
+        {
+          "label": "シャネルの茶会",
+          "type": "adaptation",
+          "serendipity": 0.71,
+          "explanation": ""
+        },
+        {
+          "label": "石川寅治",
+          "type": "adaptation",
+          "serendipity": 0.7,
+          "explanation": ""
+        },
+        {
+          "label": "太宰治",
+          "type": "thematic_resonance",
+          "serendipity": 0.7,
+          "explanation": "俳句の中で祭りが季語として使われ、太宰の作品にも祭りが登場する。"
+        },
+        {
+          "label": "イェール大学蔵近衛信尹筆「和歌屏風」および「色紙手鑑」について",
+          "type": "era_bridge",
+          "serendipity": 0.7,
+          "explanation": ""
+        },
+        {
+          "label": "雨の風景に関する基礎的研究--和歌・俳句・浮世絵に見られる雨景表現の分析を通して",
+          "type": "era_bridge",
+          "serendipity": 0.7,
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "name": "ゲーム文化の源流",
+      "query": "ファイナルファンタジー",
+      "score": 3.8,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 11,
+        "connection_types": [
+          "shared_motif",
+          "medium_cross",
+          "shared_genre",
+          "creator_work",
+          "studio_work",
+          "adaptation"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "organization",
+          "place"
+        ],
+        "themes_found": [
+          "journey_boundary",
+          "war_conflict",
+          "magic",
+          "otherworld",
+          "visual_arts",
+          "supernatural",
+          "humor_satire",
+          "mecha",
+          "literary_arts",
+          "death_rebirth"
+        ],
+        "avg_serendipity": 0.63,
+        "explanation_quality": 0.73
+      },
+      "top_connections": [
+        {
+          "label": "ファイナルファンタジーV",
+          "type": "adaptation",
+          "serendipity": 0.8,
+          "explanation": "原作と翻案: ファイナルファンタジーVからファイナルファンタジーへの展開"
+        },
+        {
+          "label": "ファイナルファンタジーシリーズ",
+          "type": "adaptation",
+          "serendipity": 0.8,
+          "explanation": "原作と翻案: ファイナルファンタジーシリーズからファイナルファンタジーへの展開"
+        },
+        {
+          "label": "ファイナルファンタジー",
+          "type": "adaptation",
+          "serendipity": 0.8,
+          "explanation": "原作と翻案: ファイナルファンタジーVからファイナルファンタジーへの展開"
+        },
+        {
+          "label": "ルー=ガルー 忌避すべき狼",
+          "type": "shared_motif",
+          "serendipity": 0.7,
+          "explanation": ""
+        },
+        {
+          "label": "ドラゴンボールZ 危険なふたり!超戦士はねむれない",
+          "type": "medium_cross",
+          "serendipity": 0.66,
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "name": "歌舞伎の世界",
+      "query": "歌舞伎",
+      "score": 3.8,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 100,
+        "connection_types": [
+          "cultural_echo"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "place"
+        ],
+        "themes_found": [
+          "magic",
+          "supernatural",
+          "humor_satire",
+          "love_bond",
+          "kabuki_theater",
+          "identity_self",
+          "craft_mastery"
+        ],
+        "avg_serendipity": 0.63,
+        "explanation_quality": 1.0
+      },
+      "top_connections": [
+        {
+          "label": "富田浩太郎",
+          "type": "cultural_echo",
+          "serendipity": 0.8,
+          "explanation": "文化的共鳴: 斬 歌舞伎と富田浩太郎はkabuki_theaterの世界で繋がる"
+        },
+        {
+          "label": "トラブル★トライアングル",
+          "type": "cultural_echo",
+          "serendipity": 0.79,
+          "explanation": "文化的共鳴: 斬 歌舞伎とトラブル★トライアングルはlove_bondの世界で繋がる"
+        },
+        {
+          "label": "愛憎ホラー劇場",
+          "type": "cultural_echo",
+          "serendipity": 0.79,
+          "explanation": "文化的共鳴: 歌舞伎舞踊と愛憎ホラー劇場はlove_bondの世界で繋がる"
+        },
+        {
+          "label": "金子あい",
+          "type": "cultural_echo",
+          "serendipity": 0.79,
+          "explanation": "文化的共鳴: 歌舞伎舞踊と金子あいはkabuki_theaterの世界で繋がる"
+        },
+        {
+          "label": "植松香",
+          "type": "cultural_echo",
+          "serendipity": 0.78,
+          "explanation": "文化的共鳴: 新歌舞伎座と植松香はkabuki_theaterの世界で繋がる"
+        }
+      ]
+    },
+    {
+      "name": "祭りと共同体",
+      "query": "祭り",
+      "score": 4.1,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 7,
+        "connection_types": [
+          "same_theme",
+          "cultural_echo",
+          "adaptation"
+        ],
+        "connected_entity_types": [
+          "work",
+          "artifact",
+          "festival",
+          "place"
+        ],
+        "themes_found": [
+          "romance",
+          "music_performance",
+          "matsuri",
+          "everyday_beauty",
+          "humor_satire",
+          "love_bond",
+          "identity_self",
+          "musical_arts",
+          "community_tradition"
+        ],
+        "avg_serendipity": 0.58,
+        "explanation_quality": 0.86
+      },
+      "top_connections": [
+        {
+          "label": "のだめカンタービレ",
+          "type": "cultural_echo",
+          "serendipity": 0.68,
+          "explanation": "県祭りの祭囃子がのだめカンタービレの音楽表現と響き合う"
+        },
+        {
+          "label": "KAWASAKIしんゆり映画祭",
+          "type": "same_theme",
+          "serendipity": 0.64,
+          "explanation": "共通テーマ「matsuri」: KAWASAKIしんゆり映画祭と雛祭りは同じ文化圏に属する"
+        },
+        {
+          "label": "加納天満宮",
+          "type": "adaptation",
+          "serendipity": 0.62,
+          "explanation": ""
+        },
+        {
+          "label": "古峯神社鎮火祭御秡護符",
+          "type": "same_theme",
+          "serendipity": 0.61,
+          "explanation": "共通テーマ「matsuri」: 古峯神社鎮火祭御秡護符と県祭りは同じ文化圏に属する"
+        },
+        {
+          "label": "甲山廿日えびす",
+          "type": "same_theme",
+          "serendipity": 0.59,
+          "explanation": "共通テーマ「matsuri」: 甲山廿日えびすと県祭りは同じ文化圏に属する"
+        }
+      ]
+    },
+    {
+      "name": "建築と自然の調和",
+      "query": "建築",
+      "score": 4.0,
+      "details": {
+        "entity_found": true,
+        "matches": 5,
+        "total_connections": 100,
+        "connection_types": [
+          "cultural_echo"
+        ],
+        "connected_entity_types": [
+          "person",
+          "work",
+          "artifact",
+          "place"
+        ],
+        "themes_found": [
+          "seasonal_beauty",
+          "yokai",
+          "sacred_profane",
+          "nature_communion",
+          "everyday_beauty",
+          "love_bond",
+          "traditional_craft",
+          "literary_arts",
+          "identity_self",
+          "craft_mastery"
+        ],
+        "avg_serendipity": 0.61,
+        "explanation_quality": 1.0
+      },
+      "top_connections": [
+        {
+          "label": "萩市堀内地区伝統的建造物群保存地区",
+          "type": "cultural_echo",
+          "serendipity": 0.8,
+          "explanation": "文化的共鳴: 建築届と萩市堀内地区伝統的建造物群保存地区はcraft_masteryの世界で繋がる"
+        },
+        {
+          "label": "ばら色の研究と花喰らふきみ",
+          "type": "cultural_echo",
+          "serendipity": 0.8,
+          "explanation": "文化的共鳴: 国宝建築とばら色の研究と花喰らふきみはnature_communionの世界で繋がる"
+        },
+        {
+          "label": "人間国宝になった十三代今泉右衛門/人と作品",
+          "type": "cultural_echo",
+          "serendipity": 0.8,
+          "explanation": "文化的共鳴: 建築の本義と人間国宝になった十三代今泉右衛門/人と作品はcraft_masteryの世界で繋がる"
+        },
+        {
+          "label": "大日本除虫菊株式会社/製",
+          "type": "cultural_echo",
+          "serendipity": 0.79,
+          "explanation": "文化的共鳴: 建築の本義と大日本除虫菊株式会社/製はcraft_masteryの世界で繋がる"
+        },
+        {
+          "label": "重要文化財建造物現状変更説明 : 1983-1985 図版編",
+          "type": "cultural_echo",
+          "serendipity": 0.79,
+          "explanation": "文化的共鳴: 清朝建築図様と重要文化財建造物現状変更説明 : 1983-1985 図版編はcraft_masteryの世界で繋がる"
+        }
+      ]
+    }
+  ],
+  "avg_quality": 4.05,
+  "route_tests": [
+    {
+      "name": "関東妖怪ルート",
+      "completed": true,
+      "stops": 10,
+      "details": {
+        "entities_with_coords": 10,
+        "connected_stops": 0,
+        "stop_labels": [
+          "稲荷鬼王神社",
+          "中井御霊神社",
+          "葛谷御霊神社",
+          "湯島御霊社",
+          "天祖神社祖霊社"
+        ]
+      }
+    },
+    {
+      "name": "近畿武士ルート",
+      "completed": true,
+      "stops": 20,
+      "details": {
+        "entities_with_coords": 20,
+        "connected_stops": 0,
+        "stop_labels": [
+          "金刀比羅神社",
+          "力侍神社",
+          "剣山神社",
+          "大歳金刀比羅神社",
+          "石切剣箭神社"
+        ]
+      }
+    },
+    {
+      "name": "京都社寺ルート",
+      "completed": true,
+      "stops": 20,
+      "details": {
+        "entities_with_coords": 0,
+        "fallback_entities": 20,
+        "connected_stops": 3,
+        "stop_labels": [
+          "平等院",
+          "崇福寺",
+          "住吉神社",
+          "不動院",
+          "興福寺"
+        ]
+      }
+    },
+    {
+      "name": "九州祭りルート",
+      "completed": true,
+      "stops": 6,
+      "details": {
+        "entities_with_coords": 6,
+        "connected_stops": 0,
+        "stop_labels": [
+          "唐津くんち",
+          "やつしろ全国花火競技大会",
+          "玉名納涼花火大会",
+          "白鬚神社の田楽",
+          "長崎くんち"
+        ]
+      }
+    },
+    {
+      "name": "中部工芸ルート",
+      "completed": true,
+      "stops": 20,
+      "details": {
+        "entities_with_coords": 20,
+        "connected_stops": 0,
+        "stop_labels": [
+          "焼津神社",
+          "漆部神社",
+          "上野東照宮",
+          "久能山東照宮",
+          "称名滝"
+        ]
+      }
+    }
+  ],
+  "route_completion": 100.0,
+  "db_stats": {
+    "entities": 438409,
+    "keep_connections": 73012,
+    "total_connections": 73868,
+    "tags": 1570570,
+    "en_labels_pct": 85.4,
+    "connection_density_pct": 16.7
+  }
+}

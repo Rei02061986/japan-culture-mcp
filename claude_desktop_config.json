@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "japan-culture": {
+      "command": "/Users/reikumaki/Library/CloudStorage/GoogleDrive-teddykmk@gmail.com/マイドライブ/piracy_detector/japan_c_MCP/japan_culture_mcp/.venv/bin/python",
+      "args": [
+        "/Users/reikumaki/Library/CloudStorage/GoogleDrive-teddykmk@gmail.com/マイドライブ/piracy_detector/japan_c_MCP/japan_culture_mcp/server/japan_culture_mcp.py"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": ""
+      }
+    }
+  }
+}

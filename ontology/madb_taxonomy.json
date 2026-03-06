@@ -1,0 +1,248 @@
+{
+  "version": "0.1.0",
+  "generated": "2026-02-28",
+  "source": "MADB (メディア芸術データベース) SPARQL",
+  "total_classes": 24,
+  "classes": {
+    "Supplement": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#Supplement",
+      "count": 1688034,
+      "properties": ["type", "identifier", "additionalType", "name", "dateModified", "materialIdentifier", "ownerIdentifier", "subMaterialIdentifier", "creator", "note", "dataPublisher", "alternativeHeadline", "relatedCollectionOfMagazine", "relatedCollectionOfManga", "genre", "pageStart", "pageEnd", "pageExclude", "price", "contributor", "episodeNumber", "originalWorkCreator", "label", "url", "holdingAgent", "itemLocation", "dataUrl", "actor", "copyrightHolder", "track", "itemCondition", "datePublished", "providerIdentifier", "duration", "description"],
+      "ontology_axis": "メタ（補足情報）",
+      "parent_medium": null,
+      "notes": "漫画雑誌の個別掲載作品など、作品に付随する補足レコード"
+    },
+    "MangaBook": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaBook",
+      "count": 394536,
+      "properties": ["name", "brand", "provider", "providerName", "creator", "publisher", "genre", "identifier", "label", "ndc", "dataPublisher", "inLanguage", "size", "location", "datePublished", "numberOfPages", "position", "isbn", "jpno", "isPartOf", "volumeNumber", "alternateName", "productID", "price", "description", "contentRating", "seriesName", "version", "originalWorkCreator", "contributor"],
+      "ontology_axis": "媒体=漫画（単行本）",
+      "parent_medium": "漫画"
+    },
+    "AnimationTVProgram": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationTVProgram",
+      "count": 197665,
+      "properties": ["name", "additionalType", "genre", "identifier", "label", "dateModified", "datePublished", "episodeNumber", "contentRating", "creator", "description", "duration", "isPartOf", "actor"],
+      "ontology_axis": "媒体=アニメ（TV）",
+      "parent_medium": "アニメ"
+    },
+    "MangaMagazineIssue": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaMagazineIssue",
+      "count": 180670,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "brand", "publisher", "price", "isbn", "isPartOf", "volumeNumber", "description"],
+      "ontology_axis": "媒体=漫画（雑誌号）",
+      "parent_medium": "漫画"
+    },
+    "MangaBookSeries": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaBookSeries",
+      "count": 139130,
+      "properties": ["name", "genre", "identifier", "label", "creator", "publisher", "brand", "datePublished", "description", "isPartOf", "contentRating"],
+      "ontology_axis": "媒体=漫画（シリーズ）",
+      "parent_medium": "漫画"
+    },
+    "Agent": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#Agent",
+      "count": 71930,
+      "properties": ["name", "identifier", "label", "alternateName", "description"],
+      "ontology_axis": "メタ（人物/組織）",
+      "parent_medium": null,
+      "notes": "作者・出版社等の人物/組織エンティティ"
+    },
+    "AnimationVideoPackage": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationVideoPackage",
+      "count": 65919,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "description", "contentRating", "duration", "isPartOf", "productID"],
+      "ontology_axis": "媒体=アニメ（映像パッケージ）",
+      "parent_medium": "アニメ",
+      "notes": "DVD/BD/VHS等の映像パッケージ。OVA、劇場版BD等を含む"
+    },
+    "AnimationVideoPackageSeries": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationVideoPackageSeries",
+      "count": 60567,
+      "properties": ["name", "genre", "identifier", "label", "creator", "description", "isPartOf"],
+      "ontology_axis": "媒体=アニメ（映像パッケージシリーズ）",
+      "parent_medium": "アニメ"
+    },
+    "GamePackage": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#GamePackage",
+      "count": 51656,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "publisher", "description", "contentRating", "platform", "productID"],
+      "ontology_axis": "媒体=ゲーム（パッケージ）",
+      "parent_medium": "ゲーム"
+    },
+    "MangaMagazinePublication": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaMagazinePublication",
+      "count": 30023,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "publisher", "brand", "isPartOf"],
+      "ontology_axis": "媒体=漫画（雑誌連載）",
+      "parent_medium": "漫画"
+    },
+    "MediaArtExhibitionOrPerformance": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MediaArtExhibitionOrPerformance",
+      "count": 20845,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "description", "location"],
+      "ontology_axis": "媒体=メディアアート（展示/パフォーマンス）",
+      "parent_medium": "メディアアート"
+    },
+    "MediaArtEvent": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MediaArtEvent",
+      "count": 10166,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "description", "location"],
+      "ontology_axis": "媒体=メディアアート（イベント）",
+      "parent_medium": "メディアアート"
+    },
+    "AnimationRelatedItem": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationRelatedItem",
+      "count": 9696,
+      "properties": ["name", "genre", "identifier", "label", "description", "isPartOf"],
+      "ontology_axis": "メタ（関連アイテム）",
+      "parent_medium": "アニメ"
+    },
+    "MangaOther": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaOther",
+      "count": 9286,
+      "properties": ["name", "genre", "identifier", "label", "creator", "description"],
+      "ontology_axis": "媒体=漫画（その他）",
+      "parent_medium": "漫画"
+    },
+    "GameVariation": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#GameVariation",
+      "count": 8594,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "description", "platform", "isPartOf"],
+      "ontology_axis": "媒体=ゲーム（バリエーション）",
+      "parent_medium": "ゲーム"
+    },
+    "AnimationTVRegularSeries": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationTVRegularSeries",
+      "count": 6176,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "description", "isPartOf"],
+      "ontology_axis": "媒体=アニメ（TVレギュラーシリーズ）",
+      "parent_medium": "アニメ"
+    },
+    "MangaMagazine": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MangaMagazine",
+      "count": 5753,
+      "properties": ["name", "genre", "identifier", "label", "publisher", "brand", "description"],
+      "ontology_axis": "媒体=漫画（雑誌）",
+      "parent_medium": "漫画"
+    },
+    "GameWork": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#GameWork",
+      "count": 5083,
+      "properties": ["name", "genre", "identifier", "label", "creator", "description", "datePublished"],
+      "ontology_axis": "媒体=ゲーム（作品）",
+      "parent_medium": "ゲーム"
+    },
+    "MediaArtRelatedItem": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#MediaArtRelatedItem",
+      "count": 4175,
+      "properties": ["name", "genre", "identifier", "label", "description"],
+      "ontology_axis": "メタ（関連アイテム）",
+      "parent_medium": "メディアアート"
+    },
+    "AnimationMovie": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationMovie",
+      "count": 2844,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "description", "duration", "contentRating"],
+      "ontology_axis": "媒体=アニメ（劇場映画）",
+      "parent_medium": "アニメ"
+    },
+    "AnimationMovieSeries": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationMovieSeries",
+      "count": 2576,
+      "properties": ["name", "genre", "identifier", "label", "creator", "description", "isPartOf"],
+      "ontology_axis": "媒体=アニメ（劇場映画シリーズ）",
+      "parent_medium": "アニメ"
+    },
+    "GameRelatedItem": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#GameRelatedItem",
+      "count": 2515,
+      "properties": ["name", "genre", "identifier", "label", "description"],
+      "ontology_axis": "メタ（関連アイテム）",
+      "parent_medium": "ゲーム"
+    },
+    "AnimationTVSpecialSeries": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#AnimationTVSpecialSeries",
+      "count": 55,
+      "properties": ["name", "genre", "identifier", "label", "datePublished", "creator", "description"],
+      "ontology_axis": "媒体=アニメ（TVスペシャルシリーズ）",
+      "parent_medium": "アニメ"
+    },
+    "Event": {
+      "uri": "https://mediaarts-db.artmuseums.go.jp/data/class#Event",
+      "count": 25,
+      "properties": ["name", "identifier", "label", "datePublished", "description", "location"],
+      "ontology_axis": "メタ（イベント）",
+      "parent_medium": null
+    }
+  },
+  "class_hierarchy": {
+    "漫画": {
+      "total_instances": 759398,
+      "classes": [
+        {"name": "MangaBook", "count": 394536, "role": "単行本"},
+        {"name": "MangaMagazineIssue", "count": 180670, "role": "雑誌号"},
+        {"name": "MangaBookSeries", "count": 139130, "role": "シリーズ"},
+        {"name": "MangaMagazinePublication", "count": 30023, "role": "雑誌連載"},
+        {"name": "MangaOther", "count": 9286, "role": "その他"},
+        {"name": "MangaMagazine", "count": 5753, "role": "雑誌タイトル"}
+      ]
+    },
+    "アニメ": {
+      "total_instances": 345497,
+      "classes": [
+        {"name": "AnimationTVProgram", "count": 197665, "role": "TV放送（エピソード）"},
+        {"name": "AnimationVideoPackage", "count": 65919, "role": "映像パッケージ（DVD/BD）"},
+        {"name": "AnimationVideoPackageSeries", "count": 60567, "role": "映像パッケージシリーズ"},
+        {"name": "AnimationRelatedItem", "count": 9696, "role": "関連アイテム"},
+        {"name": "AnimationTVRegularSeries", "count": 6176, "role": "TVレギュラーシリーズ"},
+        {"name": "AnimationMovie", "count": 2844, "role": "劇場映画"},
+        {"name": "AnimationMovieSeries", "count": 2576, "role": "劇場映画シリーズ"},
+        {"name": "AnimationTVSpecialSeries", "count": 55, "role": "TVスペシャルシリーズ"}
+      ]
+    },
+    "ゲーム": {
+      "total_instances": 67848,
+      "classes": [
+        {"name": "GamePackage", "count": 51656, "role": "パッケージ（販売単位）"},
+        {"name": "GameVariation", "count": 8594, "role": "バリエーション"},
+        {"name": "GameWork", "count": 5083, "role": "作品（概念レベル）"},
+        {"name": "GameRelatedItem", "count": 2515, "role": "関連アイテム"}
+      ]
+    },
+    "メディアアート": {
+      "total_instances": 35186,
+      "classes": [
+        {"name": "MediaArtExhibitionOrPerformance", "count": 20845, "role": "展示/パフォーマンス"},
+        {"name": "MediaArtEvent", "count": 10166, "role": "イベント"},
+        {"name": "MediaArtRelatedItem", "count": 4175, "role": "関連アイテム"}
+      ]
+    },
+    "メタ": {
+      "total_instances": 1759989,
+      "classes": [
+        {"name": "Supplement", "count": 1688034, "role": "補足情報"},
+        {"name": "Agent", "count": 71930, "role": "人物/組織"},
+        {"name": "Event", "count": 25, "role": "イベント"}
+      ]
+    }
+  },
+  "common_properties": {
+    "description": "全クラス共通のプロパティパターン",
+    "identification": ["identifier", "label", "name"],
+    "classification": ["genre", "additionalType", "contentRating"],
+    "temporal": ["datePublished", "dateModified"],
+    "relational": ["creator", "publisher", "isPartOf", "contributor", "originalWorkCreator"],
+    "descriptive": ["description", "alternativeHeadline", "alternateName"],
+    "physical": ["size", "numberOfPages", "duration"],
+    "commercial": ["price", "isbn", "productID", "brand"],
+    "provenance": ["provider", "providerName", "dataPublisher", "dataUrl", "ndc", "jpno"]
+  },
+  "ontology_coverage": {
+    "テーマ軸": "MADBにはテーマ/ジャンルの体系的分類は存在しない。genre プロパティは「マンガ単行本」等の媒体分類に使われている。テーマ検索はキーワードマッチのみ",
+    "時代軸": "datePublished で間接的に時代を判定可能。ただし作品の設定年代ではなく出版/放送年",
+    "媒体軸": "MADBの最大の強み。クラス階層が媒体の詳細分類を提供する",
+    "地理軸": "location プロパティ（出版地「東京」等）のみ。作品の舞台設定は収録されていない",
+    "体験モード軸": "MADBには体験モードに関する情報は存在しない"
+  }
+}

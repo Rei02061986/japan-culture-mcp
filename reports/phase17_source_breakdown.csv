@@ -1,0 +1,13 @@
+release_year_source,entity_type,count
+anilist_json,work,2954
+anilist_json,character,5
+anilist_manga_api,work,4436
+label_generic_year,event,2364
+label_generic_year,work,490
+label_generic_year,artifact,384
+label_jp_era,work,291944
+label_semicolon_date,work,297612
+label_wd_disambiguation,work,209
+label_wd_disambiguation,concept,20
+label_wd_disambiguation,film,5
+label_wd_disambiguation,place,4
